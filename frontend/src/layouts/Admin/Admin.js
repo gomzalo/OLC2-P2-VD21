@@ -109,8 +109,8 @@ function Admin(props) {
             <Sidebar
               routes={routes}
               logo={{
-                outterLink: "https://www.creative-tim.com/",
-                text: "Creative Tim",
+                outterLink: "https://github.com/gomzalo/OLC2-P2-VD21/",
+                text: "COVICHO",
                 imgSrc: logo,
               }}
               toggleSidebar={toggleSidebar}
