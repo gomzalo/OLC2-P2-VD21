@@ -3,16 +3,15 @@ version: '3.7'
 services:
 
   backend:
-    web:
-      container_name: backend
-      build: 
-        context: ./backend
-        dockerfile: Dockerfile
-      command: gunicorn -b 0.0.0.0:5000 todosapp.wsgi:application
-      # volumes:
-      #   - .:/usr/src/app
-      ports:
-        - "5000:5000"
+    container_name: backend
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    # command: gunicorn -b 0.0.0.0:5000 todosapp.wsgi:application
+    # volumes:
+    #   - .:/usr/src/app
+    ports:
+      - "5000:5000"
   
   frontend:
     container_name: frontend
