@@ -3,6 +3,7 @@ version: '3.8'
 services:
 
   backend:
+    image: webapp-flask
     container_name: backend
     build: 
       context: ./backend
@@ -20,12 +21,12 @@ services:
     container_name: frontend
     build:
       context: ./frontend
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
     # volumes:
     #   - '.:/app'
     #   - '/app/node_modules'
     ports:
-      - 1337:80
+      - 3000:3000
     # environment:
     #   - CHOKIDAR_USEPOLLING=true
     restart: on-failure
