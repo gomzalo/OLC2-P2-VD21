@@ -3,30 +3,32 @@ version: '3.8'
 services:
 
   backend:
-    image: webapp-flask
+    # image: webapp-flask
     container_name: backend
     build: 
       context: ./backend
       dockerfile: Dockerfile
-    command: gunicorn -w 2 -b :5000 app:app
-    volumes:
-      - .:/app
+    # command: gunicorn -w 2 -b :5000 app:app
+    # volumes: ['./api:/api']
+    # expose:
+    #   - "5000"
     ports:
       - "5000:5000"
-    env_file:
-      - ./.env.prod
+    # env_file:
+    #   - ./.env.prod
     restart: on-failure
 
   frontend:
     container_name: frontend
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     # volumes:
     #   - '.:/app'
     #   - '/app/node_modules'
     ports:
-      - 3000:3000
+      # - 1337:80
+      - 80:80
     # environment:
     #   - CHOKIDAR_USEPOLLING=true
     restart: on-failure

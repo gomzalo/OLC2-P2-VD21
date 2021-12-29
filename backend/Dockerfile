@@ -1,26 +1,19 @@
-# syntax=docker/dockerfile:1
+FROM ubuntu:20.04
 
-FROM python:3.9.5-slim-buster
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
 
-# set environment variables
-# ENV PYTHONDONTWRITEBYTECODE 1
-# ENV PYTHONUNBUFFERED 1
-ENV APP /app
+RUN apt-get update -y && apt-get install -y python3-pip 
 
-RUN mkdir $APP
-WORKDIR $APP
+# We copy just the requirements.txt first to leverage Docker cache
+ADD requirements.txt /app/
 
-# Expose the port uWSGI will listen on
+WORKDIR /app
+
+RUN /bin/bash -c "pip3 install --no-cache-dir -r requirements.txt"
+
+ADD /app/ /app/
+
 EXPOSE 5000
 
-# install dependencies
-RUN pip install --upgrade pip
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
-
-# copy project
-COPY . .
-
-# run entrypoint.sh
-# CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
-CMD [ "uwsgi", "--ini", "app.ini" ]
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "wsgi:app"]

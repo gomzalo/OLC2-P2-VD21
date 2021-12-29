@@ -8,12 +8,12 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     # command: gunicorn --bind 0.0.0.0:5000 manage:app
-    volumes:
-      - .:/app
+    # volumes:
+    #   - .:/app
     ports:
       - "5000:5000"
-    env_file:
-      - ./.env.dev
+    # env_file:
+    #   - ./.env.dev
     restart: on-failure
   
   frontend:
