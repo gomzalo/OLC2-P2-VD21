@@ -7,23 +7,23 @@ services:
     build: 
       context: ./backend
       dockerfile: Dockerfile
-    # command: gunicorn --bind 0.0.0.0:5000 manage:app
+    command: gunicorn --bind 0.0.0.0:5000 manage:app
     volumes:
       - .:/app
     ports:
       - "5000:5000"
     env_file:
-      - ./.env.dev
+      - ./.env.prod
   
   frontend:
     container_name: frontend
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     # volumes:
     #   - '.:/app'
     #   - '/app/node_modules'
     ports:
-      - 3000:3000
-    environment:
-      - CHOKIDAR_USEPOLLING=true
+      - 3000:80
+    # environment:
+    #   - CHOKIDAR_USEPOLLING=true
