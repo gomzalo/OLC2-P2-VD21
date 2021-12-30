@@ -27,31 +27,29 @@ function Footer() {
       <Container fluid>
         <Nav>
           <NavItem>
-            <NavLink href="https://www.creative-tim.com/?ref=bdr-user-archive-footer">
-              Creative Tim
+            <NavLink href="https://github.com/harias25/olc2-diciembre-2021/tree/main/Proyecto%202">
+            Proyecto 2 - Coronavirus Data Analysis With Machine Learning
             </NavLink>
           </NavItem>
           <NavItem>
-            <NavLink href="https://www.creative-tim.com/presentation?ref=bdr-user-archive-footer">
-              About Us
+            <NavLink href="https://portal.ingenieria.usac.edu.gt/">
+              Universidad de San Carlos de Guatemala - Facultad de Ingenieria
             </NavLink>
           </NavItem>
           <NavItem>
-            <NavLink href="https://www.creative-tim.com/blog?ref=bdr-user-archive-footer">
-              Blog
+            <NavLink href="#">
+              Ingenieria en Ciencias y Sistemas
             </NavLink>
           </NavItem>
         </Nav>
         <div className="copyright">
-          © {new Date().getFullYear()} made with{" "}
-          <i className="tim-icons icon-heart-2" /> by{" "}
           <a
-            href="https://www.creative-tim.com/?ref=bdr-user-archive-footer"
+            href="#"
             target="_blank"
           >
-            Creative Tim
+            Laboratorio de Organizacion de Lenguajes y Compiladores 2
           </a>{" "}
-          for a better web.
+          - Vacaciones de diciembre 2021
         </div>
       </Container>
     </footer>

@@ -28,13 +28,13 @@ function Inicio() {
           <Col md="12">
             <Card>
               <CardHeader className="mb-5">
-                <h5 className="card-category">Black Table Heading</h5>
-                <CardTitle tag="h3">
-                  Created using Poppins Font Family
+                <h5 className="card-category">Bienvenido</h5>
+                <CardTitle tag="h1">
+                Coronavirus Data Analysis With Machine Learning
                 </CardTitle>
               </CardHeader>
               <CardBody>
-                <div className="typography-line">
+                {/* <div className="typography-line">
                   <h1>
                     <span>Header 1</span>
                     The Life of Black Dashboard React
@@ -45,19 +45,22 @@ function Inicio() {
                     <span>Header 2</span>
                     The Life of Black Dashboard React
                   </h2>
-                </div>
+                </div> */}
                 <div className="typography-line">
                   <h3>
-                    <span>Header 3</span>
-                    The Life of Black Dashboard React
+                    <span>¿Qué es COVICHO?</span>
+                    Es una herramienta de análisis de datos, que permite generar graficas y reportes a partir de un archivo de entrada.
+                    Esto mediante el uso de herramientas de ciencias de datos, tales como Scickit-Learn que permiten el análisis de grupos de dtaos
+                    y a partir de estos generar gráficas.
                   </h3>
                 </div>
                 <div className="typography-line">
                   <h4>
-                    <span>Header 4</span>
-                    The Life of Black Dashboard React
+                    <span></span>
+                    ¿Cómo utilizar COVICHO?
                   </h4>
                 </div>
+                {/* 
                 <div className="typography-line">
                   <h5>
                     <span>Header 5</span>
@@ -78,8 +81,8 @@ function Inicio() {
                     that’s a responsibility that I have, to push possibilities,
                     to show people, this is the level that things could be at.
                   </p>
-                </div>
-                <div className="typography-line">
+                </div> */}
+                {/* <div className="typography-line">
                   <span>Quote</span>
                   <blockquote>
                     <p className="blockquote blockquote-primary">
@@ -92,75 +95,38 @@ function Inicio() {
                       <small>- Noaa</small>
                     </p>
                   </blockquote>
-                </div>
-                <div className="typography-line">
-                  <span>Muted Text</span>
+                </div> */}
+                {/* <div className="typography-line">
+                  <span>Carga</span>
                   <p className="text-muted">
-                    I will be the leader of a company that ends up being worth
-                    billions of dollars, because I got the answers...
+                    Antes de iniciar el análisis de datos
                   </p>
-                </div>
+                </div> */}
                 <div className="typography-line">
-                  <span>Primary Text</span>
+                  <span>Carga</span>
                   <p className="text-primary">
-                    I will be the leader of a company that ends up being worth
-                    billions of dollars, because I got the answers...
+                  Antes de iniciar el análisis de datos es necesario una fuente de datos; COVICHO permite cargar archivos que sean de las siguientes extensiones:
                   </p>
                 </div>
                 <div className="typography-line">
-                  <span>Info Text</span>
-                  <p className="text-info">
-                    I will be the leader of a company that ends up being worth
-                    billions of dollars, because I got the answers...
-                  </p>
-                </div>
-                <div className="typography-line">
-                  <span>Success Text</span>
-                  <p className="text-success">
-                    I will be the leader of a company that ends up being worth
-                    billions of dollars, because I got the answers...
-                  </p>
-                </div>
-                <div className="typography-line">
-                  <span>Warning Text</span>
-                  <p className="text-warning">
-                    I will be the leader of a company that ends up being worth
-                    billions of dollars, because I got the answers...
-                  </p>
-                </div>
-                <div className="typography-line">
-                  <span>Danger Text</span>
-                  <p className="text-danger">
-                    I will be the leader of a company that ends up being worth
-                    billions of dollars, because I got the answers...
-                  </p>
-                </div>
-                <div className="typography-line">
-                  <h2>
-                    <span>Small Tag</span>
-                    Header with small subtitle <br />
-                    <small>Use "small" tag for the headers</small>
-                  </h2>
-                </div>
-                <div className="typography-line">
-                  <span>Lists</span>
+                  {/* <span>Lists</span> */}
                   <Row>
                     <Col md="3">
-                      <h5>Unordered List</h5>
+                      <h5>Formatos de archivos soportados</h5>
                       <ul>
-                        <li>List Item</li>
-                        <li>List Item</li>
-                        <li className="list-unstyled">
+                        <li>.csv</li>
+                        <li>.json</li>
+                        {/* <li className="list-unstyled">
                           <ul>
                             <li>List Item</li>
                             <li>List Item</li>
                             <li>List Item</li>
                           </ul>
-                        </li>
-                        <li>List Item</li>
+                        </li> */}
+                        <li>xlxs</li>
                       </ul>
                     </Col>
-                    <Col md="3">
+                    {/* <Col md="3">
                       <h5>Ordered List</h5>
                       <ol>
                         <li>List Item</li>
@@ -185,10 +151,47 @@ function Inicio() {
                         <li className="list-inline-item">List2</li>
                         <li className="list-inline-item">List3</li>
                       </ul>
-                    </Col>
+                    </Col> */}
                   </Row>
                 </div>
                 <div className="typography-line">
+                  <span>Parametrización</span>
+                  <p className="text-info">
+                    Luego de tener cargados los datos, se debe de parametrizar los datos.
+                    Dicho de otra forma, se deben de elegir las variables que estaremos analizando.
+                    A su vez se elige la predicción que se desea realizar.
+                  </p>
+                </div>
+                <div className="typography-line">
+                  <span>Reporte</span>
+                  
+                  <p className="text-success">
+                    Una vez se han cargado y parametrizado los datos, a su vez, habiendo elegido que predicción se desea realizar.
+                    Es posible observar tanto una gráfica, como también un reporte que explica la misma; una descarga de este como PDF también se encontrará disponible.
+                  </p>
+                </div>
+                {/* <div className="typography-line">
+                  <span>Warning Text</span>
+                  <p className="text-warning">
+                    I will be the leader of a company that ends up being worth
+                    billions of dollars, because I got the answers...
+                  </p>
+                </div>
+                <div className="typography-line">
+                  <span>Danger Text</span>
+                  <p className="text-danger">
+                    I will be the leader of a company that ends up being worth
+                    billions of dollars, because I got the answers...
+                  </p>
+                </div>
+                <div className="typography-line">
+                  <h2>
+                    <span>Small Tag</span>
+                    Header with small subtitle <br />
+                    <small>Use "small" tag for the headers</small>
+                  </h2>
+                </div> */}
+                {/* <div className="typography-line">
                   <span>Code</span>
                   <p>
                     This is <code>.css-class-as-code</code>, an example of an
@@ -201,7 +204,7 @@ function Inicio() {
                     <br />
                     2. #Here is another line of code
                   </pre>
-                </div>
+                </div> */}
               </CardBody>
             </Card>
           </Col>

@@ -16,8 +16,8 @@
 
 */
 import Inicio from "views/Inicio";
-import TableList from "views/TableList.js";
-import UserProfile from "views/UserProfile.js";
+import Carga from "views/Carga.js";
+import Param from "views/Param.js";
 import Dashboard from "views/Dashboard.js";
 
 var routes = [
@@ -30,19 +30,19 @@ var routes = [
     layout: "/admin",
   },
   {
-    path: "/tables",
+    path: "/carga",
     name: "Carga",
     rtlName: "قائمة الجدول",
     icon: "tim-icons icon-upload",
-    component: TableList,
+    component: Carga,
     layout: "/admin",
   },
   {
-    path: "/user-profile",
+    path: "/param",
     name: "Parametrizacion",
     rtlName: "ملف تعريفي للمستخدم",
     icon: "tim-icons icon-chart-bar-32",
-    component: UserProfile,
+    component: Param,
     layout: "/admin",
   },
   {
