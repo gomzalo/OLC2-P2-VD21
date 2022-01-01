@@ -18,6 +18,9 @@
 import {React, useState} from "react";
 import {Button} from 'reactstrap';
 import * as CSV from 'csv-string';
+import axios from 'axios';
+import Swal from "sweetalert2";
+import Papa from 'papaparse';
 // reactstrap components
 import {
   Card,
@@ -25,15 +28,19 @@ import {
   CardBody,
   CardTitle,
   Table,
+  FormGroup,
   Row,
   Col,
   Input,
 } from "reactstrap";
 
+
 function Tables() {
   const [csvFile, setCsvFile] = useState();
   const [csvArray, setCsvArray] = useState([]);
   const [head, setHead] = useState([]);
+  const [datos, setDatos] = useState()
+  
   // ::::::::::   Procesar CSV  ::::::::::
   const processCSV = (str, delim) => {
     const headers = str.slice(0,str.indexOf('\n')).split(delim);
@@ -50,27 +57,147 @@ function Tables() {
     })
     setHead(...[headers]);
     setCsvArray([...newArray]);
+    // makeRequest();
   }
+  // ::::::::::   B64  ::::::::::
+  
   // ::::::::::   SUBMIT  ::::::::::
   const submit = () => {
     const file = csvFile;
     const reader = new FileReader();
-
+    // Obteniendo B64 csv
+    // toBase64(file).then(
+    //   data => 
+    //   // console.log(data)
+    //   // ========  axios  ========
+    //   axios({
+    //     method: "post",
+    //     url: 'http://0.0.0.0:5000/get_file',
+    //     data: data,
+    //   })
+    //   .then(function (response) {
+    //     //handle success
+    //     console.log(response);
+    //   })
+    //   .catch(function (response) {
+    //     //handle error
+    //     console.log(response);
+    //   })
+    //   // ========   end axios   ========
+    // );
+    // console.log(datos);
+    Papa.parse(csvFile, {
+      complete: function(results){
+        // console.log(results.data);
+        let data = results.data;
+        let temp = [];
+        for(let i of data)
+          i && temp.push(i)
+        data = temp;
+        // console.log(data);
+        
+        // ========  axios  ========
+        axios({
+          method: "post",
+          url: 'http://0.0.0.0:5000/get_file',
+          data: JSON.stringify(data),
+        })
+        .then(function (response) {
+          //handle success
+          console.log(response);
+        })
+        .catch(function (response) {
+          //handle error
+          console.log(response);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Ocurrio un error al realizar la peticion: ' + response
+          });
+        })
+        // ========   end axios   ========
+      }
+    });
+    // let formData = new FormData();
+    // formData.append("file", file);
+    // // console.log(file);
+    // console.log(formData);
     reader.onload = function(e) {
         const text = e.target.result;
+        // console.log(text);
+        // // ========  axios  ========
+        // axios({
+        //   method: "post",
+        //   url: 'http://0.0.0.0:5000/get_file',
+        //   data: text,
+        // })
+        // .then(function (response) {
+        //   //handle success
+        //   console.log(response);
+        // })
+        // .catch(function (response) {
+        //   //handle error
+        //   console.log(response);
+        // })
+        // // ========   end axios   ========
         // console.table(text);
         const delim = CSV.detect(text);
-        console.log(delim)
-        processCSV(text, delim);
+        console.log("delim:");
+        console.log(delim);
+        setDatos(text);
+        const headers = text.slice(0,text.indexOf('\n')).split(delim);
+        setHead(headers);
+        // processCSV(text, delim);
     }
 
     reader.readAsText(file);
+    // setContent(file);
   }
+  // ::::::::::   MAKE POST  ::::::::::
+  // const makeRequest = async () => {
+  //   var formData = new FormData();
+  //   const file = csvFile;
+  //   formData.append("file", file.files[0]);
+  //   console.log(file);
+  //   console.log(formData);
+  //   //--- Axios
+  //   axios({
+  //     method: "post",
+  //     url: 'http://0.0.0.0:5000/get_file',
+  //     data: formData,
+  //     headers: { "Content-Type": "multipart/form-data" },
+  //   })
+  //   .then(function (response) {
+  //     //handle success
+  //     console.log(response);
+  //   })
+  //   .catch(function (response) {
+  //     //handle error
+  //     console.log(response);
+  //   });
+  //   //--- Fetch
+  //   // try {
+  //   //   const response = await fetch('http://0.0.0.0:5000/get_file', {
+  //   //     mode:'cors',
+  //   //     method: 'POST',
+  //   //     headers: {"Content-Type": "multipart/form-data"},
+  //   //     data: csvFile,
+  //   //   });
+  //   //   const data = await response.json();
+  //   //   console.log({ data })
+  //   // }
+  //   // catch (e) {
+  //   //   console.log(e)
+  //   // }
+  // }
+  // useEffect(()=>{
+  //   makeRequest();
+  // }, []);
   // console.log("csvArray")
   // console.log(csvArray)
-  // console.log("headers")
-  // console.log(head)
-  localStorage.setItem("contenido_archivo", JSON.stringify(csvArray));
+  console.log("headers")
+  console.log(head)
+  localStorage.setItem("headers", JSON.stringify(head));
   return (
     <>
       {/* Muestra del archivo */}
@@ -106,7 +233,22 @@ function Tables() {
                 <CardTitle tag="h4">Previsualización de datos</CardTitle>
               </CardHeader>
               <CardBody>
-                <Table className="tablesorter" responsive>
+                {/* <Row>
+                  <Col md="8">
+                    <FormGroup> */}
+                      <Input
+                        height="auto"
+                        width="auto"
+                        cols="150"
+                        defaultValue={datos}
+                        placeholder="Contenido del archivo a analizar"
+                        rows="500"
+                        type="textarea"
+                      />
+                    {/* </FormGroup>
+                  </Col>
+                </Row> */}
+                {/* <Table className="tablesorter" responsive>
                   <thead className="text-primary">
                     <tr>
                       {
@@ -118,10 +260,6 @@ function Tables() {
                           return null
                         })
                       }
-                      {/* <th>Date</th>
-                      <th>Days</th>
-                      <th>Cases</th>
-                      <th>Deaths</th> */}
                     </tr>
                   </thead>
                   <tbody>
@@ -139,17 +277,13 @@ function Tables() {
                               return null
                             })
                           }
-                          {/* <td> {item.Date} </td>
-                          <td> {item.Days} </td>
-                          <td> {item.Cases} </td>
-                          <td> {item.Deaths} </td> */}
                         </tr>
                         )
                       return null
                     })
                   }
                   </tbody>
-                </Table>
+                </Table> */}
               </CardBody>
             </Card>
           </Col>

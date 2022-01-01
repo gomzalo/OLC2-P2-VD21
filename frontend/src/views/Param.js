@@ -15,7 +15,9 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import { React, useState } from "react";
+import Swal from "sweetalert2";
+import axios from 'axios';
 
 // reactstrap components
 import {
@@ -30,9 +32,222 @@ import {
   Input,
   Row,
   Col,
+  UncontrolledDropdown,
 } from "reactstrap";
 
 function UserProfile() {
+  const [col, setCol] = useState();
+  const [x, setX] = useState();
+  const [y, setY] = useState();
+  const [reporte, setReporte] = useState();
+  const [valor, setValor] = useState();
+  const headers = localStorage.getItem("headers");
+  if(headers == null){
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: '¡Primero debes de cargar un archivo!'
+    });
+  }
+  const headers_arr = JSON.parse(headers);
+  
+  // console.log(typeof(headers));
+  // console.log(typeof(headers_arr));
+  // console.log(headers_arr);
+  // const [header, setHeaders] = useState();
+  // const reporte_arr = ["Tendencia de la infección por Covid-19 en un País.",
+  // "Predicción de Infertados en un País.",
+  // "Indice de Progresión de la pandemia.",
+  // "Predicción de mortalidad por COVID en un Departamento.",
+  // "Predicción de mortalidad por COVID en un País.",
+  // "Análisis del número de muertes por coronavirus en un País.",
+  // "Tendencia del número de infectados por día de un País.",
+  // "Predicción de casos de un país para un año.",
+  // "Tendencia de la vacunación de en un País.",
+  // "Ánalisis Comparativo de Vacunaciópn entre 2 paises.",
+  // "Porcentaje de hombres infectados por covid-19 en un País desde el primer caso activo.",
+  // "Ánalisis Comparativo entres 2 o más paises o continentes.",
+  // "Muertes promedio por casos confirmados y edad de covid 19 en un País.",
+  // "Muertes según regiones de un país - Covid 19.",
+  // "Tendencia de casos confirmados de Coronavirus en un departamento de un País.",
+  // "Porcentaje de muertes frente al total de casos en un país, región o continente.",
+  // "Tasa de comportamiento de casos activos en relación al número de muertes en un continente.",
+  // "Comportamiento y clasificación de personas infectadas por COVID-19 por municipio en un País.",
+  // "Predicción de muertes en el último día del primer año de infecciones en un país.",
+  // "Tasa de crecimiento de casos de COVID-19 en relación con nuevos casos diarios y tasa de muerte por COVID-19.",
+  // "Predicciones de casos y muertes en todo el mundo - Neural Network MLPRegressor.",
+  // "Tasa de mortalidad por coronavirus (COVID-19) en un país.",
+  // "Factores de muerte por COVID-19 en un país.",
+  // "Comparación entre el número de casos detectados y el número de pruebas de un país.",
+  // "Predicción de casos confirmados por día."]
+  var reporte_arr = [{index: 1, reporte: "Tendencia de la infección por Covid-19 en un País."},
+  {index: 2, reporte: "Predicción de Infertados en un País."},
+  {index: 3, reporte: "Indice de Progresión de la pandemia."},
+  {index: 4, reporte: "Predicción de mortalidad por COVID en un Departamento."},
+  {index: 5, reporte: "Predicción de mortalidad por COVID en un País."},
+  {index: 6, reporte: "Análisis del número de muertes por coronavirus en un País."},
+  {index: 7, reporte: "Tendencia del número de infectados por día de un País."},
+  {index: 8, reporte: "Predicción de casos de un país para un año."},
+  {index: 9, reporte: "Tendencia de la vacunación de en un País."},
+  {index: 10, reporte: "Ánalisis Comparativo de Vacunaciópn entre 2 paises."},
+  {index: 11, reporte: "Porcentaje de hombres infectados por covid-19 en un País desde el primer caso activo."},
+  {index: 12, reporte: "Ánalisis Comparativo entres 2 o más paises o continentes."},
+  {index: 13, reporte: "Muertes promedio por casos confirmados y edad de covid 19 en un País."},
+  {index: 14, reporte: "Muertes según regiones de un país - Covid 19."},
+  {index: 15, reporte: "Tendencia de casos confirmados de Coronavirus en un departamento de un País."},
+  {index: 16, reporte: "Porcentaje de muertes frente al total de casos en un país, región o continente."},
+  {index: 17, reporte: "Tasa de comportamiento de casos activos en relación al número de muertes en un continente."},
+  {index: 18, reporte: "Comportamiento y clasificación de personas infectadas por COVID-19 por municipio en un País."},
+  {index: 19, reporte: "Predicción de muertes en el último día del primer año de infecciones en un país."},
+  {index: 20, reporte: "Tasa de crecimiento de casos de COVID-19 en relación con nuevos casos diarios y tasa de muerte por COVID-19."},
+  {index: 21, reporte: "Predicciones de casos y muertes en todo el mundo - Neural Network MLPRegressor."},
+  {index: 22, reporte: "Tasa de mortalidad por coronavirus (COVID-19) en un país."},
+  {index: 23, reporte: "Factores de muerte por COVID-19 en un país."},
+  {index: 24, reporte: "Comparación entre el número de casos detectados y el número de pruebas de un país."},
+  {index: 25, reporte: "Predicción de casos confirmados por día."}];
+  let reporte_map = new Map();
+  reporte_arr.forEach(element => {
+    reporte_map.set(element.index, element.reporte);
+  });
+  const handleColChange = (e) => {
+    let valor = e.target.value;
+    console.log(valor);
+    if(headers_arr.includes(valor)){
+      setCol(valor);
+    }else{      
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '¡Selecciona una columna valida!'
+      });
+    }
+  }
+  const handleXChange = (e) => {
+    let valor = e.target.value;
+    console.log(valor);
+    if(headers_arr.includes(valor)){
+      setX(valor);
+    }else{      
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '¡Selecciona un eje X valido!'
+      });
+    }
+  }
+  const handleYChange = (e) => {
+    let valor = e.target.value;
+    console.log(valor);
+    if(headers_arr.includes(valor)){
+      setY(valor);
+    }else{      
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '¡Selecciona un eje Y valido!'
+      });
+    }
+  }
+  const handleValorChange = (e) => {
+    let valor = e.target.value;
+    console.log(valor);
+    if(valor != null || valor !== undefined){
+      setValor(valor);
+    }else{      
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '¡Ingresa un valor valido!'
+      });
+    }
+  }
+  // Devuelve la key, a partir del valor en un mapa
+  const getByValue = (map, valor) => {
+    for (let [key, value] of map.entries()){
+      if(value === valor)
+        return key
+    }
+  }
+  // Eligiendo el reporte a realizar
+  const handleReporteChange = (e) => {
+    let valor = e.target.value;
+    console.log(valor);
+    let index = getByValue(reporte_map, valor);
+    console.log(index);
+    if(index !== undefined){
+      setReporte(index);
+    }else{      
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '¡Selecciona una predicción valida!'
+      });
+    }
+  }
+  // Enviando datos al server
+  const setParametros = () => {
+    if(reporte != null){
+      if(col != null){
+        if(valor != null){
+          if(x != null){
+            if(y != null){
+              // ========  axios  ========
+              axios({
+                method: "post",
+                url: 'http://0.0.0.0:5000/set_params',
+                data: {
+                  reporte: reporte,
+                  col: col,
+                  valor: valor,
+                  x: x,
+                  y: y
+                },
+              })
+              .then(function (response) {
+                //handle success
+                console.log(response);
+              })
+              .catch(function (response) {
+                //handle error
+                console.log(response);
+              })
+              // ========   end axios   ========
+            }else{
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '¡Primero selecciona un eje y!'
+              });
+            }
+          }else{
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: '¡Primero selecciona un eje x!'
+            });
+          }
+        }else{
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '¡Primero ingresa el valor a buscar!'
+          });
+        }
+      }else{
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: '¡Primero selecciona una columna!'
+        });
+      }
+    }else{
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '¡Primero selecciona una prediccion!'
+      });
+    }
+  }
   return (
     <>
       <div className="content">
@@ -40,58 +255,47 @@ function UserProfile() {
           <Col md="8">
             <Card>
               <CardHeader>
-                <h5 className="title">Edit Profile</h5>
+                <h5 className="title">Predicción a realizar</h5>
               </CardHeader>
               <CardBody>
                 <Form>
                   <Row>
                     <Col className="pr-md-1" md="5">
                       <FormGroup>
-                        <label>Company (disabled)</label>
-                        <Input
-                          defaultValue="Creative Code Inc."
-                          disabled
-                          placeholder="Company"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="px-md-1" md="3">
-                      <FormGroup>
-                        <label>Username</label>
-                        <Input
-                          defaultValue="michael23"
-                          placeholder="Username"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="pl-md-1" md="4">
-                      <FormGroup>
-                        <label htmlFor="exampleInputEmail1">
-                          Email address
-                        </label>
-                        <Input placeholder="mike@email.com" type="email" />
+                        <UncontrolledDropdown>
+                          {/* <DropdownToggle caret data-toggle="dropdown">
+                              Elige una prediccion
+                          </DropdownToggle> */}
+                          <select onChange={handleReporteChange} className='bg-success'>
+                              <option>Elige una prediccion</option>
+                              {reporte_arr.map(({index, reporte}) => <option key={index} value={reporte}>{reporte}</option>)}
+                          </select>
+                        </UncontrolledDropdown>
                       </FormGroup>
                     </Col>
                   </Row>
                   <Row>
                     <Col className="pr-md-1" md="6">
                       <FormGroup>
-                        <label>First Name</label>
-                        <Input
-                          defaultValue="Mike"
-                          placeholder="Company"
-                          type="text"
-                        />
+                        <label>Columna a filtrar</label>
+                        <UncontrolledDropdown>
+                          {/* <DropdownToggle caret data-toggle="dropdown">
+                              Elige una columna
+                          </DropdownToggle> */}
+                          <select onChange={handleColChange} className='bg-danger'>
+                              <option>Elige una columna</option>
+                              {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
+                          </select>
+                      </UncontrolledDropdown>
                       </FormGroup>
                     </Col>
                     <Col className="pl-md-1" md="6">
                       <FormGroup>
-                        <label>Last Name</label>
-                        <Input
-                          defaultValue="Andrew"
-                          placeholder="Last Name"
+                        <label>Valor a buscar</label>
+                        <Input id="valorBuscar"
+                          onChange={handleValorChange}
+                          defaultValue=""
+                          placeholder="Escribe el valor a buscar"
                           type="text"
                         />
                       </FormGroup>
@@ -100,63 +304,58 @@ function UserProfile() {
                   <Row>
                     <Col md="12">
                       <FormGroup>
-                        <label>Address</label>
+                        {/* <label>Address</label>
                         <Input
                           defaultValue="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
                           placeholder="Home Address"
                           type="text"
-                        />
+                        /> */}
                       </FormGroup>
                     </Col>
                   </Row>
                   <Row>
                     <Col className="pr-md-1" md="4">
                       <FormGroup>
-                        <label>City</label>
-                        <Input
-                          defaultValue="Mike"
-                          placeholder="City"
-                          type="text"
-                        />
+                        <label>Eje X</label>
+                        <UncontrolledDropdown>
+                          {/* <DropdownToggle caret data-toggle="dropdown">
+                              Elige un eje X
+                          </DropdownToggle> */}
+                          <select onChange={handleXChange} >
+                              <option>Elige un eje X</option>
+                              {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
+                          </select>
+                        </UncontrolledDropdown>
                       </FormGroup>
                     </Col>
+                    <Col></Col>
                     <Col className="px-md-1" md="4">
                       <FormGroup>
-                        <label>Country</label>
-                        <Input
-                          defaultValue="Andrew"
-                          placeholder="Country"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="pl-md-1" md="4">
-                      <FormGroup>
-                        <label>Postal Code</label>
-                        <Input placeholder="ZIP Code" type="number" />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md="8">
-                      <FormGroup>
-                        <label>About Me</label>
-                        <Input
-                          cols="80"
-                          defaultValue="Lamborghini Mercy, Your chick she so thirsty, I'm in
-                            that two seat Lambo."
-                          placeholder="Here can be your description"
-                          rows="4"
-                          type="textarea"
-                        />
+                        <label>Eje Y</label>
+                        <UncontrolledDropdown>
+                          {/* <DropdownToggle caret data-toggle="dropdown">
+                              Elige un eje Y
+                          </DropdownToggle> */}
+                          <select onChange={handleYChange} >
+                              <option>Elige un eje Y</option>
+                              {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
+                          </select>
+                        </UncontrolledDropdown>
                       </FormGroup>
                     </Col>
                   </Row>
                 </Form>
               </CardBody>
               <CardFooter>
-                <Button className="btn-fill" color="primary" type="submit">
-                  Save
+                <Button 
+                className="btn-fill"
+                onClick={(e) => {
+                  e.preventDefault()
+                  setParametros()
+                }}
+                color="primary"
+                type="submit">
+                  Parametrizar
                 </Button>
               </CardFooter>
             </Card>
@@ -174,19 +373,18 @@ function UserProfile() {
                     <img
                       alt="..."
                       className="avatar"
-                      src={require("assets/img/emilyz.jpg").default}
+                      src={require("assets/img/header.jpg").default}
                     />
-                    <h5 className="title">Mike Andrew</h5>
+                    <h5 className="title">Parametrización</h5>
                   </a>
-                  <p className="description">Ceo/Co-Founder</p>
+                  {/* <p className="description">Ceo/Co-Founder</p> */}
                 </div>
                 <div className="card-description">
-                  Do not be scared of the truth because we need to restart the
-                  human foundation in truth And I love you like Kanye loves
-                  Kanye I love Rick Owens’ bed design but the back is...
+                  Elige las columnas que se utilizarán para la predicción del modelo.
+                  A su vez, elige que reporte deseas generar y predecir.
                 </div>
               </CardBody>
-              <CardFooter>
+              {/* <CardFooter>
                 <div className="button-container">
                   <Button className="btn-icon btn-round" color="facebook">
                     <i className="fab fa-facebook" />
@@ -198,7 +396,7 @@ function UserProfile() {
                     <i className="fab fa-google-plus" />
                   </Button>
                 </div>
-              </CardFooter>
+              </CardFooter> */}
             </Card>
           </Col>
         </Row>

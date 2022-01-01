@@ -6,7 +6,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "5.15.1",
     "axios": "^0.24.0",
-    "bootstrap": "4.5.3",
+    "bootstrap": "^4.5.3",
     "chart.js": "2.9.4",
     "classnames": "2.2.6",
     "csv-string": "^4.0.1",
@@ -24,6 +24,7 @@
     "react-router-dom": "5.2.0",
     "react-scripts": "4.0.1",
     "reactstrap": "8.7.1",
+    "sweetalert2": "^11.3.3",
     "xlsx": "^0.17.4"
   },
   "scripts": {
