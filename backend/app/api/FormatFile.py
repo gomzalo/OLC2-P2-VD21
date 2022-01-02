@@ -31,6 +31,12 @@ def post():
         content = json.dumps(first_val);
         jason = json.loads(content)
         arr = literal_eval(jason)
+        for item in arr:
+            # print(item)
+            if item == [''] or item == [""]:
+                print("item vacio alv")
+                print(item)
+                arr.remove(item)
         # arr2 = arr[:]
         headers_arr =  arr[0]
         arr_col = len(arr)
@@ -71,18 +77,8 @@ def post():
         # csv_file = pd.DataFrame(arr).to_csv('csv_file.csv')
         
         # csv_file = df_temp.to_csv("csv_file.csv")
-        print(arr)
-        # ||||||||||||||    PANDAS  ||||||||||||||
-        df = pd.read_csv('csv_file.csv')
-        x = np.asarray(df['Days']).reshape(-1,1)
-        y = df['Cases']
-        regr = linear_model.LinearRegression()
-        regr.fit(x,y)
-        y_pred = regr.predict(x)
-        plt.scatter(x, y, color='black')
-        plt.plot(x, y_pred, color='blue', linewidth=3)
-        plt.show()
-        # ||||||||||||||    END PANDAS  ||||||||||||||
+        # print(arr)
+        
         return {
             'resultStatus': 'SUCCESS',
             'message': 'xd'

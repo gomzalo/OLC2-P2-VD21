@@ -27,8 +27,8 @@ import {
   CardHeader,
   CardBody,
   CardTitle,
-  Table,
-  FormGroup,
+  // Table,
+  // FormGroup,
   Row,
   Col,
   Input,
@@ -37,28 +37,28 @@ import {
 
 function Tables() {
   const [csvFile, setCsvFile] = useState();
-  const [csvArray, setCsvArray] = useState([]);
+  // const [csvArray, setCsvArray] = useState([]);
   const [head, setHead] = useState([]);
   const [datos, setDatos] = useState()
   
   // ::::::::::   Procesar CSV  ::::::::::
-  const processCSV = (str, delim) => {
-    const headers = str.slice(0,str.indexOf('\n')).split(delim);
-    // console.log(headers)
-    const rows = str.slice(str.indexOf('\n')+1).split('\n');
+  // const processCSV = (str, delim) => {
+  //   const headers = str.slice(0,str.indexOf('\n')).split(delim);
+  //   // console.log(headers)
+  //   const rows = str.slice(str.indexOf('\n')+1).split('\n');
 
-    const newArray = rows.map( (row, i) => {
-        const values = row.split(delim);
-        const obj = Object.assign({}, ...Object.entries({...headers}).map(([e, a]) => values[e]?({[JSON.parse(a)]: values[e]}):null));
-        // console.log("obj");
-        // console.log(obj);
-        return obj;
-        // return {Date: values[0], Days: values[1], Cases: values[2], Deaths: values[3]};
-    })
-    setHead(...[headers]);
-    setCsvArray([...newArray]);
-    // makeRequest();
-  }
+  //   const newArray = rows.map( (row, i) => {
+  //       const values = row.split(delim);
+  //       const obj = Object.assign({}, ...Object.entries({...headers}).map(([e, a]) => values[e]?({[JSON.parse(a)]: values[e]}):null));
+  //       // console.log("obj");
+  //       // console.log(obj);
+  //       return obj;
+  //       // return {Date: values[0], Days: values[1], Cases: values[2], Deaths: values[3]};
+  //   })
+  //   setHead(...[headers]);
+  //   setCsvArray([...newArray]);
+  //   // makeRequest();
+  // }
   // ::::::::::   B64  ::::::::::
   
   // ::::::::::   SUBMIT  ::::::::::
@@ -90,6 +90,7 @@ function Tables() {
       complete: function(results){
         // console.log(results.data);
         let data = results.data;
+        // data = data.replace(/^\s*(\r)/gm, "");
         let temp = [];
         for(let i of data)
           i && temp.push(i)
@@ -123,7 +124,7 @@ function Tables() {
     // // console.log(file);
     // console.log(formData);
     reader.onload = function(e) {
-        const text = e.target.result;
+        let text = e.target.result.replace(/^\s*(\r)/gm, "");
         // console.log(text);
         // // ========  axios  ========
         // axios({
@@ -144,9 +145,17 @@ function Tables() {
         const delim = CSV.detect(text);
         console.log("delim:");
         console.log(delim);
+        text = text.replace(/^\s*(\r)/gm, "");
         setDatos(text);
-        const headers = text.slice(0,text.indexOf('\n')).split(delim);
-        setHead(headers);
+        let headers = text.slice(0,text.indexOf('\n'))
+        headers = headers.replace(/^\s*(\r)/gm, "");
+        let headers_arr = headers.split(delim);
+        for (let i = 0; i < headers_arr.length; i++) {
+          headers_arr[i] = headers_arr[i].replace(/\s/g, "");
+          
+        }
+        console.log(headers_arr);
+        setHead(headers_arr);
         // processCSV(text, delim);
     }
 

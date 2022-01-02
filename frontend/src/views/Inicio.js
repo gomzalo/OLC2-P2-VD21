@@ -15,15 +15,25 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
-
+import { React, useEffect, useState } from "react";
+import axios from 'axios';
 // reactstrap components
 import { Card, CardHeader, CardBody, CardTitle, Row, Col } from "reactstrap";
 
 function Inicio() {
+  const [getMessage, setGetMessage] = useState({})
+
+  useEffect(()=>{
+    axios.get('http://0.0.0.0:5000/').then(response => {
+      console.log("SUCCESS", response);
+      setGetMessage(response);
+    }).catch(error => {
+      console.log(error);
+    })
+  }, []);
   return (
     <>
-      <div className="content">
+      <div div className="content">
         <Row>
           <Col md="12">
             <Card>
@@ -209,6 +219,11 @@ function Inicio() {
             </Card>
           </Col>
         </Row>
+        <div>{getMessage.status === 200 ? 
+          <p>{getMessage.data.message}</p>
+          :
+          <p>Servidor no encontrado...</p>
+        }</div>
       </div>
     </>
   );

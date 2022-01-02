@@ -17,7 +17,7 @@
 */
 import { React, useState } from "react";
 import Swal from "sweetalert2";
-import axios from 'axios';
+// import axios from 'axios';
 
 // reactstrap components
 import {
@@ -41,19 +41,29 @@ function UserProfile() {
   const [y, setY] = useState();
   const [reporte, setReporte] = useState();
   const [valor, setValor] = useState();
+  const [pred, setPred] = useState();
   const headers = localStorage.getItem("headers");
-  if(headers == null){
+  const headers_arr = JSON.parse(headers);
+  if(headers_arr.length === 0){
     Swal.fire({
       icon: 'error',
       title: 'Oops...',
       text: '¡Primero debes de cargar un archivo!'
     });
   }
-  const headers_arr = JSON.parse(headers);
-  
+  const checkHeaders = () => {
+    if(headers_arr.length === 0){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '¡Primero debes de cargar un archivo!'
+      });
+    }
+  }
   // console.log(typeof(headers));
   // console.log(typeof(headers_arr));
   // console.log(headers_arr);
+  // console.log(headers_arr.length);
   // const [header, setHeaders] = useState();
   // const reporte_arr = ["Tendencia de la infección por Covid-19 en un País.",
   // "Predicción de Infertados en un País.",
@@ -109,7 +119,9 @@ function UserProfile() {
   reporte_arr.forEach(element => {
     reporte_map.set(element.index, element.reporte);
   });
+  // console.log(reporte_map);
   const handleColChange = (e) => {
+    checkHeaders();
     let valor = e.target.value;
     console.log(valor);
     if(headers_arr.includes(valor)){
@@ -123,6 +135,7 @@ function UserProfile() {
     }
   }
   const handleXChange = (e) => {
+    checkHeaders();
     let valor = e.target.value;
     console.log(valor);
     if(headers_arr.includes(valor)){
@@ -136,6 +149,7 @@ function UserProfile() {
     }
   }
   const handleYChange = (e) => {
+    checkHeaders();
     let valor = e.target.value;
     console.log(valor);
     if(headers_arr.includes(valor)){
@@ -149,6 +163,7 @@ function UserProfile() {
     }
   }
   const handleValorChange = (e) => {
+    checkHeaders();
     let valor = e.target.value;
     console.log(valor);
     if(valor != null || valor !== undefined){
@@ -161,6 +176,20 @@ function UserProfile() {
       });
     }
   }
+  const handlePredChange = (e) => {
+    checkHeaders();
+    let valor = e.target.value;
+    console.log(valor);
+    if(valor > 1){
+      setPred(valor);
+    }else{      
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '¡Ingresa una predicción valida!'
+      });
+    }
+  }
   // Devuelve la key, a partir del valor en un mapa
   const getByValue = (map, valor) => {
     for (let [key, value] of map.entries()){
@@ -170,6 +199,7 @@ function UserProfile() {
   }
   // Eligiendo el reporte a realizar
   const handleReporteChange = (e) => {
+    checkHeaders();
     let valor = e.target.value;
     console.log(valor);
     let index = getByValue(reporte_map, valor);
@@ -180,7 +210,7 @@ function UserProfile() {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: '¡Selecciona una predicción valida!'
+        text: '¡Selecciona un reporte valido!'
       });
     }
   }
@@ -191,27 +221,55 @@ function UserProfile() {
         if(valor != null){
           if(x != null){
             if(y != null){
-              // ========  axios  ========
-              axios({
-                method: "post",
-                url: 'http://0.0.0.0:5000/set_params',
-                data: {
+              if(pred != null){
+                const params_data = {
                   reporte: reporte,
                   col: col,
                   valor: valor,
                   x: x,
-                  y: y
-                },
-              })
-              .then(function (response) {
-                //handle success
-                console.log(response);
-              })
-              .catch(function (response) {
-                //handle error
-                console.log(response);
-              })
-              // ========   end axios   ========
+                  y: y,
+                  pred: pred
+                }
+                // const headers = {'Content-Type': 'application/json'}
+                // ========  POST request  ========
+                fetch('http://0.0.0.0:5000/set_params', {
+                  'method': 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(params_data)
+                  })
+                  .then(async response => {
+                    const isJson = response.headers.get('content-type')?.includes('application/json');
+                    const data = isJson && await response.json();
+                    // response.json();
+                    console.log(data);
+                    if (!response.ok) {
+                      // get error message from body or default to response status
+                      const error = (data && data.message) || response.status;
+                      return Promise.reject(error);
+                    }
+                    
+                    // localStorage.setItem("reportes_map", JSON.stringify(reporte_map));
+                    localStorage.setItem("reporte_activo", JSON.stringify(reporte));
+                    localStorage.setItem("datos_grafica", JSON.stringify(data));
+                    localStorage.setItem("params_grafica", JSON.stringify(params_data));
+                  })
+                  .catch(error => {
+                    // this.setState({ errorMessage: error.toString() });
+                    // console.error('Ocurrio un error: ', error);
+                    Swal.fire({
+                      icon: 'error',
+                      title: 'Oops...',
+                      text: 'Ocurrio un error: ' + error.toString()
+                    });
+                  });
+                // ========   end POST request   ========
+              }else{
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: '¡Primero ingresa una predicción!'
+                });
+              }
             }else{
               Swal.fire({
                 icon: 'error',
@@ -244,7 +302,7 @@ function UserProfile() {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: '¡Primero selecciona una prediccion!'
+        text: '¡Primero selecciona un reporte!'
       });
     }
   }
@@ -255,7 +313,7 @@ function UserProfile() {
           <Col md="8">
             <Card>
               <CardHeader>
-                <h5 className="title">Predicción a realizar</h5>
+                <h5 className="title">Reporte a realizar</h5>
               </CardHeader>
               <CardBody>
                 <Form>
@@ -267,10 +325,16 @@ function UserProfile() {
                               Elige una prediccion
                           </DropdownToggle> */}
                           <select onChange={handleReporteChange} className='bg-success'>
-                              <option>Elige una prediccion</option>
-                              {reporte_arr.map(({index, reporte}) => <option key={index} value={reporte}>{reporte}</option>)}
+                              <option>Elige un reporte</option>
+                              {reporte_arr.map(({index, reporte}) => <option key={index} value={reporte}>{index + ". " + reporte}</option>)}
                           </select>
                         </UncontrolledDropdown>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col md="12">
+                      <FormGroup>
                       </FormGroup>
                     </Col>
                   </Row>
@@ -304,12 +368,6 @@ function UserProfile() {
                   <Row>
                     <Col md="12">
                       <FormGroup>
-                        {/* <label>Address</label>
-                        <Input
-                          defaultValue="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
-                          placeholder="Home Address"
-                          type="text"
-                        /> */}
                       </FormGroup>
                     </Col>
                   </Row>
@@ -341,6 +399,25 @@ function UserProfile() {
                               {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
                           </select>
                         </UncontrolledDropdown>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col md="12">
+                      <FormGroup>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col md="12">
+                      <FormGroup>
+                        <label>Predicción a realizar</label>
+                        <Input
+                          defaultValue=""
+                          onChange={handlePredChange}
+                          placeholder="Ingresa el valor que deseas predecir"
+                          type="number"
+                        />
                       </FormGroup>
                     </Col>
                   </Row>
