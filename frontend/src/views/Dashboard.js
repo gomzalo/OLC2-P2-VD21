@@ -19,9 +19,9 @@ import React from "react";
 // nodejs library that concatenates classes
 // import classNames from "classnames";
 // react plugin used to create charts
-import { Line} from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 // import axios from 'axios';
-
+import font from 'assets/fonts/times.ttf'
 // reactstrap components
 import {
   // Button,
@@ -33,7 +33,20 @@ import {
   Row,
   Col,
 } from "reactstrap";
+// PDF generator
+import { 
+  Page,
+  Text,
+  View,
+  Document,
+  StyleSheet,
+  PDFViewer,
+  ReactPDF,
+  Image,
+  Font,
+} from '@react-pdf/renderer';
 
+// Create styles
 
 function Dashboard(props) {
   var reporte_arr = [{index: 1, reporte: "Tendencia de la infección por Covid-19 en un País."},
@@ -94,8 +107,71 @@ function Dashboard(props) {
     }
   });
   console.log(reporte_activo);
+  // :::::::::::::::::::::::::  PDF  :::::::::::::::::::::::::
+  // Fuente
+  Font.register({family: 'Times New Roman', format: "truetype", src: font })
+  // Create styles
+  const styles = StyleSheet.create({
+    page: {
+      fontFamily: 'Times New Roman',
+      flex: 1,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      backgroundColor: '#FFFF'
+    },
+    title: {
+      fontSize: 24,
+      textAlign: 'center'
+    },
+    footer: {
+      fontSize: 10,
+      textAlign: 'left'
+    },
+    texto: {
+      fontSize: 12,
+      flex: 0,
+      flexDirection: 'col',
+      flexWrap: 'wrap',
+      textAlign: 'left'
+    },
+    section: {
+      margin: 25,
+      padding: 30,
+      flexGrow: 1
+    },
+    col: {
+      margin: 5,
+      padding: 10,
+      // width: '50%',
+      flexGrow: 1
+    }
+  });
 
-  // Grafica
+  // Create Document Component
+  const MyDocument = () => (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.section}>
+          <Text style={styles.title}
+          >{reporte_activo}</Text>
+        </View>
+        <View style={styles.col}>
+          <Text style={styles.texto}
+          >Se muestra la figura I, que representa el reporte y su predicción.</Text>
+        </View>
+        <View style={styles.section}>
+        <Image
+        src={img64}
+        // style={{textAlign: 'left', padding:20, margin: 10 }}
+        fixed={true}
+        ></Image>
+        <Text style={styles.footer}>Figura I</Text>
+        </View>
+      </Page>
+    </Document>
+  );
+  // ReactPDF.renderToStream(<MyDocument />);
+  // :::::::::::::::::::::::::    Grafica   :::::::::::::::::::::::::
   const grafiquinha = {
     data: (canvas) => {
       let ctx = canvas.getContext("2d");
@@ -195,12 +271,12 @@ function Dashboard(props) {
           <h1>Reporte activo</h1>
         }</div>
         <Row>
-          <Col lg="4">
+          <Col lg="5" md='20'>
             <Card className="card-chart">
               <CardHeader>
                 <h5 className="card-category">Resultado</h5>
                 <CardTitle tag="h3">
-                  <i className="tim-icons icon-bell-55 text-info" /> Grafica
+                  <i className="tim-icons icon-bell-55 text-info" /> Gráfica
                 </CardTitle>
               </CardHeader>
               <CardBody>
@@ -212,23 +288,6 @@ function Dashboard(props) {
                 </div>
               </CardBody>
             </Card>
-          </Col>
-          <Col lg="4">
-            <Card className="card-chart">
-              <CardHeader>
-                <h1 className="card-category">Reporte</h1>
-                <CardTitle tag="h3">
-                  
-                </CardTitle>
-              </CardHeader>
-              <CardBody>
-                
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col lg="6" md="12">
             <Card>
               <CardHeader>
                 <CardTitle tag="h4">Predicción</CardTitle>
@@ -242,7 +301,29 @@ function Dashboard(props) {
               </CardBody>
             </Card>
           </Col>
+          <Col lg="6">
+            <Card className="card-chart">
+              <CardHeader>
+                <h1 className="card-category">Reporte</h1>
+                <CardTitle tag="h3">
+                <PDFViewer
+                  height='700'
+                  width='750'
+                >
+                  <MyDocument 
+                  />
+                </PDFViewer>
+                </CardTitle>
+              </CardHeader>
+              <CardBody>
+                {/* PDF */}
+              </CardBody>
+            </Card>
+          </Col>
         </Row>
+        {/* <Row>
+          
+        </Row> */}
       </div>
     </>
   );

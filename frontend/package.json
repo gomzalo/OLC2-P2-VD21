@@ -5,6 +5,9 @@
   "homepage": "./",
   "dependencies": {
     "@fortawesome/fontawesome-free": "5.15.1",
+    "@react-pdf/renderer": "^2.0.21",
+    "@sweetalert2/theme-dark": "^5.0.8",
+    "@sweetalert2/themes": "^5.0.8",
     "axios": "^0.24.0",
     "bootstrap": "^4.5.3",
     "chart.js": "2.9.4",
@@ -21,6 +24,7 @@
     "react-csv-to-table": "^0.0.4",
     "react-dom": "17.0.1",
     "react-notification-alert": "0.0.13",
+    "react-pdfmake": "^0.3.0",
     "react-router-dom": "5.2.0",
     "react-scripts": "4.0.1",
     "reactstrap": "8.7.1",

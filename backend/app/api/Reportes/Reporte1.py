@@ -53,11 +53,13 @@ def reportar_1(eje_x, eje_y, col, filtro, pred):
     
     # Generando imagen en B64
     s = io.BytesIO()
-    plt.savefig(s, format='png', bbox_inches="tight")
+    figure = plt.gcf()
+    figure.set_size_inches(8, 6)
+    plt.savefig(s, format='png', bbox_inches="tight", dpi=100)
     plt.close()
     s = base64.b64encode(s.getvalue()).decode("utf-8").replace("\n", "")
-    imgb64 = '<img align="left" src="data:image/png;base64,%s">' % s
-    img64_json = json.dumps(s)
+    imgb64 = 'data:image/png;base64,%s' % s
+    img64_json = json.dumps(imgb64)
     print(imgb64)
     ret = {
         "eje_x": x_json,

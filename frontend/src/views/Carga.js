@@ -105,6 +105,11 @@ function Tables() {
         })
         .then(function (response) {
           //handle success
+          Swal.fire(
+            '¡Muy bien!',
+            'Se ha cargado el archivo correctamente.',
+            'success'
+          )
           console.log(response);
         })
         .catch(function (response) {

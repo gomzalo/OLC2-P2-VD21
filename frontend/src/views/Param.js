@@ -17,6 +17,7 @@
 */
 import { React, useState } from "react";
 import Swal from "sweetalert2";
+// import Swal from 'sweetalert2/src/sweetalert2.js'
 // import axios from 'axios';
 
 // reactstrap components
@@ -247,7 +248,11 @@ function UserProfile() {
                       const error = (data && data.message) || response.status;
                       return Promise.reject(error);
                     }
-                    
+                    Swal.fire(
+                      '¡Muy bien!',
+                      'Se ha parametrizado el modelo correctamente.',
+                      'success'
+                    )
                     // localStorage.setItem("reportes_map", JSON.stringify(reporte_map));
                     localStorage.setItem("reporte_activo", JSON.stringify(reporte));
                     localStorage.setItem("datos_grafica", JSON.stringify(data));
