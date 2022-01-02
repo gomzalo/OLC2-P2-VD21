@@ -10,6 +10,9 @@ import json
 from ast import literal_eval
 import csv
 from api.Reportes.Reporte1 import reportar_1
+from api.Reportes.Reporte7 import reportar_7
+import numpy as np
+import pandas as pd
 
 set_params = Blueprint('set_params', __name__)
 
@@ -52,18 +55,26 @@ def post():
         pred = request.json['pred']
         x = request.json['x']
         y = request.json['y']
-        print("Reporte: " + str(reporte_key) + " - " + reporte + "\nx: " + x + ", y: " + y + ", col: " + col + "\nvalor: " + valor + ", pred: " + str(pred))
+        print("\nReporte: " + str(reporte_key) + " - " + reporte + "\nx: " + x + ", y: " + y + ", col: " + col + "\nvalor: " + valor + ", pred: " + str(pred) + '\n')
         if reporte_key == 1:
+            if(type(x) != np.number):
+                df[x] = pd.DatetimeIndex(df[x])
             res_r1 = reportar_1(x, y, col, valor, pred)
             return{
-            'resultStatus': 'SUCCESS',
-            'message': "Reporte 1 generado correctamente",
-            'data': res_r1
-        }
-        
+                'resultStatus': 'SUCCESS',
+                'message': "Reporte 1 generado correctamente",
+                'data': res_r1
+            }
+        elif reporte_key == 7:
+            res_r7 = reportar_7(x, y, col, valor, pred)
+            return{
+                'resultStatus': 'SUCCESS',
+                'message': "Reporte 7 generado correctamente",
+                'data': res_r7
+            }
         # print(rep_dict)
         # print(type(rep_dict))
         return{
-            'resultStatus': 'SUCCESS',
+            'resultStatus': 'ERROR',
             'message': "Error"
         }

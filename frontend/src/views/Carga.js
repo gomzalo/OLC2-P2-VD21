@@ -65,27 +65,6 @@ function Tables() {
   const submit = () => {
     const file = csvFile;
     const reader = new FileReader();
-    // Obteniendo B64 csv
-    // toBase64(file).then(
-    //   data => 
-    //   // console.log(data)
-    //   // ========  axios  ========
-    //   axios({
-    //     method: "post",
-    //     url: 'http://0.0.0.0:5000/get_file',
-    //     data: data,
-    //   })
-    //   .then(function (response) {
-    //     //handle success
-    //     console.log(response);
-    //   })
-    //   .catch(function (response) {
-    //     //handle error
-    //     console.log(response);
-    //   })
-    //   // ========   end axios   ========
-    // );
-    // console.log(datos);
     Papa.parse(csvFile, {
       complete: function(results){
         // console.log(results.data);
@@ -130,23 +109,6 @@ function Tables() {
     // console.log(formData);
     reader.onload = function(e) {
         let text = e.target.result.replace(/^\s*(\r)/gm, "");
-        // console.log(text);
-        // // ========  axios  ========
-        // axios({
-        //   method: "post",
-        //   url: 'http://0.0.0.0:5000/get_file',
-        //   data: text,
-        // })
-        // .then(function (response) {
-        //   //handle success
-        //   console.log(response);
-        // })
-        // .catch(function (response) {
-        //   //handle error
-        //   console.log(response);
-        // })
-        // // ========   end axios   ========
-        // console.table(text);
         const delim = CSV.detect(text);
         console.log("delim:");
         console.log(delim);
@@ -167,46 +129,7 @@ function Tables() {
     reader.readAsText(file);
     // setContent(file);
   }
-  // ::::::::::   MAKE POST  ::::::::::
-  // const makeRequest = async () => {
-  //   var formData = new FormData();
-  //   const file = csvFile;
-  //   formData.append("file", file.files[0]);
-  //   console.log(file);
-  //   console.log(formData);
-  //   //--- Axios
-  //   axios({
-  //     method: "post",
-  //     url: 'http://0.0.0.0:5000/get_file',
-  //     data: formData,
-  //     headers: { "Content-Type": "multipart/form-data" },
-  //   })
-  //   .then(function (response) {
-  //     //handle success
-  //     console.log(response);
-  //   })
-  //   .catch(function (response) {
-  //     //handle error
-  //     console.log(response);
-  //   });
-  //   //--- Fetch
-  //   // try {
-  //   //   const response = await fetch('http://0.0.0.0:5000/get_file', {
-  //   //     mode:'cors',
-  //   //     method: 'POST',
-  //   //     headers: {"Content-Type": "multipart/form-data"},
-  //   //     data: csvFile,
-  //   //   });
-  //   //   const data = await response.json();
-  //   //   console.log({ data })
-  //   // }
-  //   // catch (e) {
-  //   //   console.log(e)
-  //   // }
-  // }
-  // useEffect(()=>{
-  //   makeRequest();
-  // }, []);
+  
   // console.log("csvArray")
   // console.log(csvArray)
   console.log("headers")

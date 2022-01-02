@@ -14,17 +14,17 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.metrics import mean_squared_error, r2_score
 
 
-def reportar_1(eje_x, eje_y, col, filtro, pred):
+def reportar_7(eje_x, eje_y, col, filtro, pred):
     # print("entro a reportar_1")
     # ||||||||||||||    LINEAL  ||||||||||||||
     # Parametrizacion y filtrado
     df = pd.read_csv('csv_file.csv')
     df = df.loc[df[col]==filtro,]
     x = np.asarray(df[eje_x]).reshape(-1,1)
+    # df[eje_x] = pd.DatetimeIndex(df[eje_x])
     x_data = df[eje_x]
     y = df[eje_y]
     pf = PolynomialFeatures(degree = 5)
-    
     
     x_trans = pf.fit_transform(x)
     regr = linear_model.LinearRegression()
@@ -49,14 +49,11 @@ def reportar_1(eje_x, eje_y, col, filtro, pred):
     plt.plot(x, y_pred, color='blue', linewidth=3)
     # plt.show()
     
-    
     # Preparando variables a devolver
     x_json = json.dumps(x_data.tolist())
     y_json = json.dumps(y.tolist())
     pred_json =  json.dumps(prediccion.tolist())
-    # print(x_json)
-    # print(type(arr_data))
-    
+
     # Generando imagen en B64
     s = io.BytesIO()
     figure = plt.gcf()
@@ -70,17 +67,8 @@ def reportar_1(eje_x, eje_y, col, filtro, pred):
     ret = {
         "eje_x": x_json,
         "eje_y": y_json,
-        # "arr_data": arr_data,
-        # "y_pred": y_pred.tolist(),
-        # "img64": str(s),
         "img64": img64_json,
         "pred": pred_json
         }
-    # # print(ret)
-    # ret_json = json.dumps(ret)
-    # print(ret_json)
-    # return ret_json
-    # return "ret_json"
-    # plt.show()
     return ret
     # ||||||||||||||    END PANDAS  ||||||||||||||

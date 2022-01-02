@@ -89,7 +89,7 @@ function Dashboard(props) {
   const eje_y = JSON.parse(res_pred.data.eje_y);
   const prediccao = JSON.parse(res_pred.data.pred);
   const img64 = JSON.parse(res_pred.data.img64);
-  console.log(img64);
+  // console.log(img64);
   // const data_arr = res_pred.data.arr_data;
   let data_arr = [];
   for (let i = 0; i < eje_x.length; i++) {
