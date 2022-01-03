@@ -14,8 +14,8 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.metrics import mean_squared_error, r2_score
 
 
-# ******* 1: "Tendencia de la infección por Covid-19 en un País." *******
-def reportar_1(eje_x, eje_y, col, filtro, pred, es_fecha):
+# ******* 2: "Predicción de Infectados en un País." *******
+def reportar_2(eje_x, eje_y, col, filtro, pred, es_fecha):
     # print("entro a reportar_2")
     # Lectura del archivo
     df = pd.read_csv('csv_file.csv')
@@ -58,6 +58,9 @@ def reportar_1(eje_x, eje_y, col, filtro, pred, es_fecha):
     # print(y_pred)
     # ****  GRAFICA  **** 
     plt.scatter(x, y, color='black')
+    plt.title("Predicción de Infectados en " + str(filtro))
+    plt.xlabel(eje_x)
+    plt.ylabel(eje_y)
     plt.plot(x, y_pred, color='blue', linewidth=3)
     # plt.show()
     

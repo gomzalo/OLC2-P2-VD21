@@ -39,14 +39,20 @@ import {
 
 function UserProfile() {
   const [col, setCol] = useState();
+  
   const [x, setX] = useState();
   const [y, setY] = useState();
   const [isDate, setIsDate] = useState(false);
   const [reporte, setReporte] = useState();
   const [valor, setValor] = useState();
   const [pred, setPred] = useState();
+  const [colArr, setColArr] = useState([]);
+  const [res_params, set_res_params] = useState();
   const headers = localStorage.getItem("headers");
+  const csv_arr = localStorage.getItem("csv_arr");
+  const csv_arr_json = JSON.parse(csv_arr);
   const headers_arr = JSON.parse(headers);
+  let col_arr;
   if(headers_arr.length === 0){
     Swal.fire({
       icon: 'error',
@@ -70,7 +76,7 @@ function UserProfile() {
   // const [header, setHeaders] = useState();
 
   var reporte_arr = [{index: 1, reporte: "Tendencia de la infección por Covid-19 en un País."},
-  {index: 2, reporte: "Predicción de Infertados en un País."},
+  {index: 2, reporte: "Predicción de Infectados en un País."},
   {index: 3, reporte: "Indice de Progresión de la pandemia."},
   {index: 4, reporte: "Predicción de mortalidad por COVID en un Departamento."},
   {index: 5, reporte: "Predicción de mortalidad por COVID en un País."},
@@ -105,6 +111,32 @@ function UserProfile() {
     console.log(valor);
     if(headers_arr.includes(valor)){
       setCol(valor);
+      // Obteniendo el index de la columna seleccionada
+      let index = headers_arr.indexOf(valor);
+      // console.log("index col: ", index);
+      // Creando arreglo de la columna seleccionada
+      let temp_arr = [];
+      // console.log(csv_arr_json);
+      csv_arr_json.forEach(element => {
+        temp_arr.push(element[index]);
+      });
+      // Creando arreglo con campos unicos
+      let col_arr = [...new Set(temp_arr)];
+      let temp = []
+      // Removiendo primer elemento, encabezado
+      col_arr.shift();
+      // Removiendo valores vacios
+      for (let i of col_arr) {
+        i && temp.push(i);
+      }
+      // Arreglo de columna con valores unicos
+      col_arr = temp;
+      setColArr(col_arr);
+      console.log(col_arr);
+      console.log(typeof col_arr);
+      console.log(typeof headers_arr);
+      console.log(typeof colArr);
+      console.log(colArr);
     }else{      
       Swal.fire({
         icon: 'error',
@@ -145,13 +177,13 @@ function UserProfile() {
     checkHeaders();
     let valor = e.target.value;
     console.log(valor);
-    if(valor != null || valor !== undefined){
+    if(colArr.includes(valor)){
       setValor(valor);
     }else{      
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: '¡Ingresa un valor valido!'
+        text: 'Elige un valor valido!'
       });
     }
   }
@@ -202,101 +234,144 @@ function UserProfile() {
       setIsDate(valor);
     }
   }
+  // ***** Validaciones de campos *****
+  const checkParams = (rep_num) => {
+    switch (rep_num) {
+      case 1:
+        console.log("rep1");
+        if(checkCol && checkX && checkY && checkValor){
+          console.log("rep1 true");
+          
+          // console.log(params_rep);
+          // set_res_params(JSON.stringify(params_rep));
+          return true
+        }else{
+          return false;
+        }
+      default:
+        return false;
+    }
+  }
+  const checkCol = () => {
+    if(col == null){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '¡Primero selecciona una columna!'
+      });
+      return false;
+    }else{
+      return true;
+    }
+  }
+  const checkValor = () => {
+    if(valor == null){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '¡Primero ingresa el valor a buscar!'
+      });
+      return false;
+    }else{
+      return true;
+    }
+  }
+  const checkX = () => {
+    if(x == null){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '¡Primero selecciona un eje x!'
+      });
+      return false;
+    }else{
+      return true;
+    }
+  }
+  const checkY = () => {
+    if(y == null){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '¡Primero selecciona un eje y!'
+      });
+      return false;
+    }else{
+      return true;
+    }
+  }
+  const checkPred = () => {
+    if(pred == null){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '¡Primero ingresa una predicción!'
+      });
+      return false;
+    }else{
+      return true;
+    }
+  }
   // Enviando datos al server
   const setParametros = () => {
     if(reporte != null){
-      if(col != null){
-        if(valor != null){
-          if(x != null){
-            if(y != null){
-              if(pred != null){
-                if(x == y){
-                  Swal.fire(
-                    '¿Qué deseas analizar?',
-                    '¡Seleccionaste los mismos parametros para los ejes X y Y!',
-                    'question'
-                  );
-                }
-                const params_data = {
-                  reporte: reporte,
-                  col: col,
-                  valor: valor,
-                  x: x,
-                  isDate: isDate,
-                  y: y,
-                  pred: pred
-                }
-                // const headers = {'Content-Type': 'application/json'}
-                // ========  POST request  ========
-                fetch('http://0.0.0.0:5000/set_params', {
-                  'method': 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(params_data)
-                  })
-                  .then(async response => {
-                    const isJson = response.headers.get('content-type')?.includes('application/json');
-                    const data = isJson && await response.json();
-                    // response.json();
-                    console.log(data);
-                    if (!response.ok) {
-                      // get error message from body or default to response status
-                      const error = (data && data.message) || response.status;
-                      return Promise.reject(error);
-                    }
-                    Swal.fire(
-                      '¡Muy bien!',
-                      'Se ha parametrizado el modelo correctamente.',
-                      'success'
-                    )
-                    // localStorage.setItem("reportes_map", JSON.stringify(reporte_map));
-                    localStorage.setItem("reporte_activo", JSON.stringify(reporte));
-                    localStorage.setItem("datos_grafica", JSON.stringify(data));
-                    localStorage.setItem("params_grafica", JSON.stringify(params_data));
-                  })
-                  .catch(error => {
-                    // this.setState({ errorMessage: error.toString() });
-                    // console.error('Ocurrio un error: ', error);
-                    Swal.fire({
-                      icon: 'error',
-                      title: 'Oops...',
-                      text: 'Ocurrio un error: ' + error.toString()
-                    });
-                  });
-                // ========   end POST request   ========
-              }else{
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Oops...',
-                  text: '¡Primero ingresa una predicción!'
-                });
-              }
-            }else{
-              Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: '¡Primero selecciona un eje y!'
-              });
+      if(x == y){
+        Swal.fire(
+          '¿Qué deseas analizar?',
+          '¡Seleccionaste los mismos parametros para los ejes X y Y!',
+          'question'
+        );
+      }
+      if(checkParams(reporte)){
+        let params_rep;
+        if(reporte == 1){
+          params_rep = {
+            reporte: reporte,
+            col: col,
+            valor: valor,
+            x: x,
+            isDate: isDate,
+            y: y,
+          }
+        }
+        console.log(params_rep);
+        // const headers = {'Content-Type': 'application/json'}
+        // ========  POST request  ========
+        fetch('http://0.0.0.0:5000/set_params', {
+          'method': 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(params_rep)
+          })
+          .then(async response => {
+            const isJson = response.headers.get('content-type')?.includes('application/json');
+            const data = isJson && await response.json();
+            // response.json();
+            console.log(data);
+            if (!response.ok) {
+              // get error message from body or default to response status
+              const error = (data && data.message) || response.status;
+              return Promise.reject(error);
             }
-          }else{
+            Swal.fire(
+              '¡Muy bien!',
+              'Se ha parametrizado el modelo correctamente.',
+              'success'
+            )
+            // localStorage.setItem("reportes_map", JSON.stringify(reporte_map));
+            localStorage.setItem("reporte_activo", JSON.stringify(reporte));
+            localStorage.setItem("datos_grafica", JSON.stringify(data));
+            localStorage.setItem("params_grafica", JSON.stringify(params_rep));
+          })
+          .catch(error => {
+            // this.setState({ errorMessage: error.toString() });
+            // console.error('Ocurrio un error: ', error);
             Swal.fire({
               icon: 'error',
               title: 'Oops...',
-              text: '¡Primero selecciona un eje x!'
+              text: 'Ocurrio un error: ' + error.toString()
             });
-          }
-        }else{
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: '¡Primero ingresa el valor a buscar!'
           });
-        }
-      }else{
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: '¡Primero selecciona una columna!'
-        });
+        // ========   end POST request   ========
       }
     }else{
       Swal.fire({
@@ -338,100 +413,205 @@ function UserProfile() {
                       </FormGroup>
                     </Col>
                   </Row>
-                  <Row>
-                    <Col className="pr-md-1" md="6">
-                      <FormGroup>
-                        <label>Columna a filtrar</label>
-                        <UncontrolledDropdown>
-                          {/* <DropdownToggle caret data-toggle="dropdown">
-                              Elige una columna
-                          </DropdownToggle> */}
-                          <select onChange={handleColChange} className='bg-danger'>
-                              <option>Elige una columna</option>
-                              {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
-                          </select>
-                      </UncontrolledDropdown>
-                      </FormGroup>
-                    </Col>
-                    <Col className="pl-md-1" md="6">
-                      <FormGroup>
-                        <label>Valor a buscar</label>
-                        <Input id="valorBuscar"
-                          onChange={handleValorChange}
-                          defaultValue=""
-                          placeholder="Escribe el valor a buscar"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md="12">
-                      <FormGroup>
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col className="pr-md-1" md="4">
-                      <FormGroup>
-                        <label>Eje X</label>
-                        <UncontrolledDropdown>
-                          {/* <DropdownToggle caret data-toggle="dropdown">
-                              Elige un eje X
-                          </DropdownToggle> */}
-                          <select onChange={handleXChange} >
-                              <option>Elige un eje X</option>
-                              {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
-                          </select>
-                        </UncontrolledDropdown>
-                        
-                      </FormGroup>
-                    </Col>
-                    <Col></Col>
-                    <Col className="px-md-1" md="4">
-                      <FormGroup>
-                        <label>Eje Y</label>
-                        <UncontrolledDropdown>
-                          {/* <DropdownToggle caret data-toggle="dropdown">
-                              Elige un eje Y
-                          </DropdownToggle> */}
-                          <select onChange={handleYChange} >
-                              <option>Elige un eje Y</option>
-                              {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
-                          </select>
-                        </UncontrolledDropdown>
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md="4">
-                      <FormGroup>
-                        <Input
-                          onChange={handleCheckChange}
-                          type="checkbox" />{' '}
-                        ¿Fecha?
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md="12">
-                      <FormGroup>
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md="12">
-                      <FormGroup>
-                        <label>Predicción a realizar</label>
-                        <Input
-                          defaultValue=""
-                          onChange={handlePredChange}
-                          placeholder="Ingresa el valor que deseas predecir"
-                          type="number"
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
+                  {(() => {
+                    console.log("rep -> " + (reporte))
+                    // ************ BEGIN SWITCH
+                    switch(reporte) {
+                      // :::::::::::::::::::  PARAMS REP 1    :::::::::::::::::::
+                      case 1:
+                        return(
+                          // <MyForm1 />
+                          <FormGroup>
+                            <Row>
+                              <Col className="pr-md-1" md="6">
+                                <FormGroup>
+                                  <label>Columna país</label>
+                                  <UncontrolledDropdown>
+                                    <select onChange={handleColChange} className='bg-danger'>
+                                        <option>Elige la columna de paises</option>
+                                        {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
+                                    </select>
+                                </UncontrolledDropdown>
+                                </FormGroup>
+                              </Col>
+                              <Col className="pl-md-1" md="6">
+                                <FormGroup>
+                                  <label>Nombre del país</label>
+                                  <UncontrolledDropdown>
+                                    <select onChange={handleValorChange} className='bg-warning'>
+                                        <option>Elige el valor a filtrar</option>
+                                        {colArr.map(option => <option key={option} value={option}>{option}</option>)}
+                                    </select>
+                                  </UncontrolledDropdown>
+                                </FormGroup>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col md="12">
+                                <FormGroup>
+                                </FormGroup>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col className="pr-md-1" md="4">
+                                <FormGroup>
+                                  <label>Eje X</label>
+                                  <UncontrolledDropdown>
+                                    <select onChange={handleXChange} >
+                                        <option>Elige un eje X</option>
+                                        {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
+                                    </select>
+                                  </UncontrolledDropdown>
+                                </FormGroup>
+                              </Col>
+                              <Col></Col>
+                              <Col className="px-md-1" md="4">
+                                <FormGroup>
+                                  <label>Elige la columna de infectados</label>
+                                  <UncontrolledDropdown>
+                                    {/* <DropdownToggle caret data-toggle="dropdown">
+                                        Elige un eje Y
+                                    </DropdownToggle> */}
+                                    <select onChange={handleYChange} >
+                                        <option>Elige un eje Y</option>
+                                        {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
+                                    </select>
+                                  </UncontrolledDropdown>
+                                </FormGroup>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col md="4">
+                                <FormGroup>
+                                  <Input
+                                    onChange={handleCheckChange}
+                                    type="checkbox" />{' '}
+                                  ¿Fecha?
+                                </FormGroup>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col md="12">
+                                <FormGroup>
+                                </FormGroup>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col md="12">
+                                {/* <FormGroup>
+                                  <label>Predicción a realizar</label>
+                                  <Input
+                                    defaultValue=""
+                                    onChange={handlePredChange}
+                                    placeholder="Ingresa el valor que deseas predecir"
+                                    type="number"
+                                  />
+                                </FormGroup> */}
+                              </Col>
+                            </Row>
+                          </FormGroup>
+                        )
+                        // :::::::::::::::::::  PARAMS REP 2    :::::::::::::::::::
+                      case 2:
+                        return(
+                          // <MyForm1 />
+                          <FormGroup>
+                            <Row>
+                              <Col className="pr-md-1" md="6">
+                                <FormGroup>
+                                  <label>Columna país</label>
+                                  <UncontrolledDropdown>
+                                    <select onChange={handleColChange} className='bg-danger'>
+                                        <option>Elige una columna</option>
+                                        {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
+                                    </select>
+                                </UncontrolledDropdown>
+                                </FormGroup>
+                              </Col>
+                              <Col className="pl-md-1" md="6">
+                                <FormGroup>
+                                  <label>Nombre del país</label>
+                                  <UncontrolledDropdown>
+                                    <select onChange={handleValorChange} className='bg-warning'>
+                                        <option>Elige el valor a filtrar</option>
+                                        {colArr.map(option => <option key={option} value={option}>{option}</option>)}
+                                    </select>
+                                  </UncontrolledDropdown>
+                                </FormGroup>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col md="12">
+                                <FormGroup>
+                                </FormGroup>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col className="pr-md-1" md="4">
+                                <FormGroup>
+                                  <label>Eje X</label>
+                                  <UncontrolledDropdown>
+                                    <select onChange={handleXChange} >
+                                        <option>Elige un eje X</option>
+                                        {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
+                                    </select>
+                                  </UncontrolledDropdown>
+                                  
+                                </FormGroup>
+                              </Col>
+                              <Col></Col>
+                              <Col className="px-md-1" md="4">
+                                <FormGroup>
+                                  <label>Elige la columna de infectados</label>
+                                  <UncontrolledDropdown>
+                                    {/* <DropdownToggle caret data-toggle="dropdown">
+                                        Elige un eje Y
+                                    </DropdownToggle> */}
+                                    <select onChange={handleYChange} >
+                                        <option>Elige un eje Y</option>
+                                        {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
+                                    </select>
+                                  </UncontrolledDropdown>
+                                </FormGroup>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col md="4">
+                                <FormGroup>
+                                  <Input
+                                    onChange={handleCheckChange}
+                                    type="checkbox" />{' '}
+                                  ¿Fecha?
+                                </FormGroup>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col md="12">
+                                <FormGroup>
+                                </FormGroup>
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col md="12">
+                                <FormGroup>
+                                  <label>Predicción a realizar</label>
+                                  <Input
+                                    defaultValue=""
+                                    onChange={handlePredChange}
+                                    placeholder="Ingresa el valor que deseas predecir"
+                                    type="number"
+                                  />
+                                </FormGroup>
+                              </Col>
+                            </Row>
+                          </FormGroup>
+                        )
+                    }
+                    // ************ END SWITCH
+                  })()}
+                  {/* ******  BEGINS FORM GROUP PARAM */}
+                  {/* <MyForm1 /> */}
+                  {/* ******  ENDs FORM GROUP PARAM */}
                 </Form>
               </CardBody>
               <CardFooter>
@@ -472,19 +652,6 @@ function UserProfile() {
                   A su vez, elige que reporte deseas generar y predecir.
                 </div>
               </CardBody>
-              {/* <CardFooter>
-                <div className="button-container">
-                  <Button className="btn-icon btn-round" color="facebook">
-                    <i className="fab fa-facebook" />
-                  </Button>
-                  <Button className="btn-icon btn-round" color="twitter">
-                    <i className="fab fa-twitter" />
-                  </Button>
-                  <Button className="btn-icon btn-round" color="google">
-                    <i className="fab fa-google-plus" />
-                  </Button>
-                </div>
-              </CardFooter> */}
             </Card>
           </Col>
         </Row>

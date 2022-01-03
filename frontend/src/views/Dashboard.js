@@ -79,15 +79,45 @@ function Dashboard(props) {
   const headers = localStorage.getItem("headers");
   const reporte_activo_key = localStorage.getItem("reporte_activo");
   const datos_grafica = localStorage.getItem("datos_grafica");
+  const params_grafica = localStorage.getItem("params_grafica");
+  let params_data_json = JSON.parse(params_grafica);
   let res_pred = JSON.parse(datos_grafica);
   console.log(res_pred);
+  /**
+  *   const params_data = {
+        reporte: reporte,
+        col: col,
+        valor: valor,
+        x: x,
+        isDate: isDate,
+        y: y,
+        pred: pred
+      }
+   */
+  console.log(params_data_json);
+  let param_col;
+  let param_x;
+  let param_y;
+  let param_pred;
+  let param_filtro;
+  param_col = params_data_json.col;
+  param_x = params_data_json.x;
+  param_y = params_data_json.y;
+  param_pred = params_data_json.pred;
+  param_filtro = params_data_json.valor;
   /*
-  data:
-    eje_x, eje_y, pred
+  ::::::  datos_grafica   ::::::
+    data:
+      eje_x,
+      eje_y,
+      pred
   */
   const eje_x = JSON.parse(res_pred.data.eje_x);
   const eje_y = JSON.parse(res_pred.data.eje_y);
-  const prediccao = JSON.parse(res_pred.data.pred);
+  let prediccao = 0;
+  if(res_pred.hasOwnProperty('pred')){
+    prediccao = JSON.parse(res_pred.data.pred);
+  }
   const img64 = JSON.parse(res_pred.data.img64);
   // console.log(img64);
   // const data_arr = res_pred.data.arr_data;
@@ -98,7 +128,7 @@ function Dashboard(props) {
   // console.log("data_arr");
   // console.log(data_arr);
 
-  const params_grafica = localStorage.getItem("params_grafica");
+  
   let reporte_activo = "";
   reporte_arr.forEach(element => {
     reporte_map.set(element.index, element.reporte);
@@ -172,10 +202,19 @@ function Dashboard(props) {
   );
   // ReactPDF.renderToStream(<MyDocument />);
   // :::::::::::::::::::::::::    Grafica   :::::::::::::::::::::::::
+  // Legendas de ejes
+  let ejexL = '';
+  let ejeyL = '';
+  if(params_grafica !== null){
+    ejexL = param_x;
+    ejeyL = param_y;
+  }else{
+    ejexL = 'Eje X';
+    ejeyL = 'Eje Y';
+  }
   const grafiquinha = {
     data: (canvas) => {
       let ctx = canvas.getContext("2d");
-  
       let gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
   
       gradientStroke.addColorStop(1, "rgba(66,134,121,0.15)");
@@ -187,7 +226,7 @@ function Dashboard(props) {
         labels: eje_x,
         datasets: [
           {
-            label: "My First dataset",
+            label: ejeyL,
             fill: true,
             backgroundColor: gradientStroke,
             borderColor: "#00d6b4",
@@ -227,6 +266,10 @@ function Dashboard(props) {
       scales: {
         yAxes: [
           {
+            scaleLabel: {
+              display: true,
+              labelString: ejeyL
+            },
             barPercentage: 1.6,
             gridLines: {
               drawBorder: false,
@@ -244,6 +287,10 @@ function Dashboard(props) {
   
         xAxes: [
           {
+            scaleLabel: {
+              display: true,
+              labelString: ejexL
+            },
             barPercentage: 1.6,
             gridLines: {
               drawBorder: false,
@@ -275,9 +322,18 @@ function Dashboard(props) {
             <Card className="card-chart">
               <CardHeader>
                 <h5 className="card-category">Resultado</h5>
-                <CardTitle tag="h3">
-                  <i className="tim-icons icon-bell-55 text-info" /> Gráfica
-                </CardTitle>
+                  {
+                    params_grafica !== null ?
+                    <CardTitle tag="h3">
+                      <i className="tim-icons icon-bell-55 text-info" /> 
+                      {param_filtro}
+                    </CardTitle>
+                    :
+                    <CardTitle tag="h3">
+                      <i className="tim-icons icon-bell-55 text-info" /> 
+                      Gráfica
+                    </CardTitle>
+                  }
               </CardHeader>
               <CardBody>
                 <div className="chart-area">

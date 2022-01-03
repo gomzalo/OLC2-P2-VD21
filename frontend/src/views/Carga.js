@@ -63,7 +63,7 @@ function Tables() {
     const ext = getFileNameWithExt(e);
     //  :::::::::::::::::  EXCEL  :::::::::::::::::
     if(ext == 'xlsx'){
-      console.log("Tipo Excel");
+      console.log("Tipo XLSX");
       // ========  API REQ  ========
       e.arrayBuffer().then((res) => {
         // Obteniendo datos
@@ -164,16 +164,20 @@ function Tables() {
     const file = archivo;
 
     const reader = new FileReader();
+    // Parseando csv a array
     Papa.parse(archivo, {
       complete: function(results){
         // console.log(results.data);
         let data = results.data;
         // data = data.replace(/^\s*(\r)/gm, "");
         let temp = [];
+        // Removiendo valores vacios
         for(let i of data)
           i && temp.push(i)
         data = temp;
-        // console.log(data);
+        // Array con contenido
+        console.log(data);
+        localStorage.setItem("csv_arr", JSON.stringify(data));
         // ========  axios  ========
         axios({
           method: "post",

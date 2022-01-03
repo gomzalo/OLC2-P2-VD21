@@ -15,7 +15,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 
 # ******* 1: "Tendencia de la infección por Covid-19 en un País." *******
-def reportar_1(eje_x, eje_y, col, filtro, pred, es_fecha):
+def reportar_1(eje_x, eje_y, col, filtro, es_fecha):
     # print("entro a reportar_1")
     # Lectura del archivo
     df = pd.read_csv('csv_file.csv')
@@ -33,7 +33,7 @@ def reportar_1(eje_x, eje_y, col, filtro, pred, es_fecha):
     # Entrenando el modelo lin
     regr.fit(x,y)
     # Realizando predicicion lin
-    prediccion = regr.predict([[pred]]) # Prediccion
+    # prediccion = regr.predict([[pred]]) # Prediccion
     
     # print("x\n")
     # print(type(x))
@@ -58,13 +58,16 @@ def reportar_1(eje_x, eje_y, col, filtro, pred, es_fecha):
     # print(y_pred)
     # ****  GRAFICA  **** 
     plt.scatter(x, y, color='black')
+    plt.title("Tendencia de la infección por Covid-19 en " + str(filtro))
+    plt.xlabel(eje_x)
+    plt.ylabel(eje_y)
     plt.plot(x, y_pred, color='blue', linewidth=3)
     # plt.show()
     
     # Preparando variables a devolver en peticion
     x_json = json.dumps(x_data.tolist())
     y_json = json.dumps(y.tolist())
-    pred_json =  json.dumps(prediccion.tolist())
+    # pred_json =  json.dumps(prediccion.tolist())
     # print(x_json)
     # print(type(arr_data))
     
@@ -86,8 +89,8 @@ def reportar_1(eje_x, eje_y, col, filtro, pred, es_fecha):
         # "arr_data": arr_data,
         # "y_pred": y_pred.tolist(),
         # "img64": str(s),
-        "img64": img64_json,
-        "pred": pred_json
+        "img64": img64_json
+        # "pred": pred_json
         }
     # # print(ret)
     # ret_json = json.dumps(ret)

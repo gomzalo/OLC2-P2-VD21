@@ -9,8 +9,11 @@ import base64
 import json
 from ast import literal_eval
 import csv
+# Import reportes
 from api.Reportes.Reporte1 import reportar_1
+from api.Reportes.Reporte2 import reportar_2
 from api.Reportes.Reporte7 import reportar_7
+
 import numpy as np
 import pandas as pd
 
@@ -18,7 +21,7 @@ set_params = Blueprint('set_params', __name__)
 
 rep_dict = {
     1: "Tendencia de la infección por Covid-19 en un País.",
-    2: "Predicción de Infertados en un País.",
+    2: "Predicción de Infectados en un País.",
     3: "Indice de Progresión de la pandemia.",
     4: "Predicción de mortalidad por COVID en un Departamento.",
     5: "Predicción de mortalidad por COVID en un País.",
@@ -52,20 +55,28 @@ def post():
         reporte = rep_dict[reporte_key]
         col = request.json['col']
         valor = request.json['valor']
-        pred = request.json['pred']
         x = request.json['x']
         y = request.json['y']
         is_date = request.json['isDate']
-        print("\nReporte: " + str(reporte_key) + " - " + reporte + "\nx: " + x + ", y: " + y + ", col: " + col + "\nvalor: " + valor + ", pred: " + str(pred) + ", isDate: " + str(is_date) + '\n')
+        print("\nReporte: " + str(reporte_key) + " - " + reporte + "\nx: " + x + ", y: " + y + ", col: " + col + "\nvalor: " + valor + ", isDate: " + str(is_date) + '\n')
         if reporte_key == 1:
-            res_r1 = reportar_1(x, y, col, valor, pred, is_date)
+            res_r1 = reportar_1(x, y, col, valor, is_date)
             return{
                 'resultStatus': 'SUCCESS',
                 'message': "Reporte 1 generado correctamente",
                 'data': res_r1
             }
+        elif reporte_key == 2:
+            pred = request.json['pred']
+            print("pred: " + str(pred))
+            res_r2 = reportar_2(x, y, col, valor, pred, is_date)
+            return{
+                'resultStatus': 'SUCCESS',
+                'message': "Reporte 2 generado correctamente",
+                'data': res_r2
+            }
         elif reporte_key == 7:
-            res_r7 = reportar_7(x, y, col, valor, pred, is_date)
+            res_r7 = reportar_7(x, y, col, valor, is_date)
             return{
                 'resultStatus': 'SUCCESS',
                 'message': "Reporte 7 generado correctamente",
