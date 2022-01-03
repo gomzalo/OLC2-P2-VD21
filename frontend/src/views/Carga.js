@@ -23,6 +23,7 @@ import Swal from "sweetalert2";
 import Papa from 'papaparse';
 import XLSX from 'xlsx';
 import fs from 'fs';
+import { Parser } from 'json2csv'
 // import Proptypes from 'prop-types';
 // import { CSVLink } from 'react-csv';
 // reactstrap components
@@ -60,32 +61,81 @@ function Tables() {
   const inputHandler = (e) => {
     console.log(e);
     const ext = getFileNameWithExt(e);
+    //  :::::::::::::::::  EXCEL  :::::::::::::::::
     if(ext == 'xlsx'){
       console.log("Tipo Excel");
       // ========  API REQ  ========
       e.arrayBuffer().then((res) => {
+        // Obteniendo datos
         let data = new Uint8Array(res);
         let workbook = XLSX.read(data, {type: "array"});
         let first_sheet_name = workbook.SheetNames[0];
         // console.log("sheet Name", first_sheet_name);
         let worksheet = workbook.Sheets[first_sheet_name]
-        let jsonData = XLSX.utils.sheet_to_json(worksheet, {raw: true});
-        // console.log("JSON", jsondata);
-        let json = jsonData.map((x) =>({
-          ...x,
-          ColumnName:"Value2"
-        }))
-        let fileNameWithoutExtension = e.name.substring(0, e.name.i);
-        let nombre_arch = "other\\" + fileNameWithoutExtension + ".csv";
-        let new_worksheet = XLSX.utils.json_to_sheet(json);
-        let new_workbook = XLSX.utils.book_new();
-        console.log(new_workbook);
-        XLSX.utils.book_append_sheet(new_workbook, new_worksheet, "CSV_Sheet");
-        XLSX.writeFile(new_workbook, nombre_arch);
+        // Obteniendo el nombre del archivo
+        let name = e.name
+        const lastDot = name.lastIndexOf('.');
+        const fileName = name.substring(0, lastDot);
+        let nombre_arch = fileName + ".csv";
+        // let jsonData = XLSX.utils.sheet_to_json(worksheet, {raw: true});
+        // // console.log("JSON", jsondata);
+        // let json = jsonData.map((x) =>({
+        //   ...x,
+        //   ColumnName:"Value2"
+        // }))
+
+        // let new_worksheet = XLSX.utils.json_to_sheet(json);
+        // let new_workbook = XLSX.utils.book_new();
+        // // console.log(new_workbook);
+        // XLSX.utils.book_append_sheet(new_workbook, new_worksheet, "CSV_Sheet");
+        
+        // XLSX.writeFile(new_workbook, nombre_arch);
+        // Creando contenido en csv
+        let csv_xlsx = XLSX.utils.sheet_to_csv(worksheet);
+        // Objeto file con el contenido y tipo csv
+        let new_csv_file = new File([csv_xlsx], nombre_arch, {type: "text/csv", lastModified: ''})
+        // console.log(new_csv_file);
+        setArchivo(new_csv_file)
       })
       // ========   end API REQ   ========
-    }else{
-      console.log("Tipo csv");
+    }//  :::::::::::::::::  JSON  :::::::::::::::::
+    else if(ext == 'json'){
+      console.log("Tipo JSON");
+      // let fields = ['field1', 'field2', 'field3'];
+      let fields = [];
+      // Obteniendo el nombre del archivo
+      let name = e.name
+      const lastDot = name.lastIndexOf('.');
+      const fileName = name.substring(0, lastDot);
+      let nombre_arch = fileName + ".csv";
+      var reader = new FileReader();
+      reader.readAsText(e, "UTF-8");
+      reader.onload = function (e) {
+        let data = e.target.result;
+        let parsed_data = JSON.parse(data);
+        for (const item in parsed_data[0]) {
+          fields.push(item)
+        }
+        // console.log(parsed_data);
+        // console.log(fields);
+        const opts = { fields };
+
+        try {
+          const parser = new Parser(opts);
+          // Creando contenido en csv
+          const csv = parser.parse(parsed_data);
+          console.log(csv);
+          // Objeto file con el contenido y tipo csv
+          let new_csv_file = new File([csv], nombre_arch, {type: "text/csv", lastModified: ''})
+          console.log(new_csv_file);
+          setArchivo(new_csv_file)
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }//  :::::::::::::::::  CSV  :::::::::::::::::
+    else{
+      console.log("Tipo CSV");
       setArchivo(e)
     }
   }
