@@ -21,6 +21,10 @@ import * as CSV from 'csv-string';
 import axios from 'axios';
 import Swal from "sweetalert2";
 import Papa from 'papaparse';
+import XLSX from 'xlsx';
+import fs from 'fs';
+// import Proptypes from 'prop-types';
+// import { CSVLink } from 'react-csv';
 // reactstrap components
 import {
   Card,
@@ -34,38 +38,83 @@ import {
   Input,
 } from "reactstrap";
 
-
 function Tables() {
-  const [csvFile, setCsvFile] = useState();
-  // const [csvArray, setCsvArray] = useState([]);
+  const [archivo, setArchivo] = useState();
+  const [tipoArchivo, setTipoArchivo] = useState();
+  const [nombreArchivo, setNombreArchivo] = useState();
   const [head, setHead] = useState([]);
   const [datos, setDatos] = useState()
   
-  // ::::::::::   Procesar CSV  ::::::::::
-  // const processCSV = (str, delim) => {
-  //   const headers = str.slice(0,str.indexOf('\n')).split(delim);
-  //   // console.log(headers)
-  //   const rows = str.slice(str.indexOf('\n')+1).split('\n');
+  const getFileNameWithExt = (event) => {
+    const name = event.name;
+    const lastDot = name.lastIndexOf('.');
+  
+    const fileName = name.substring(0, lastDot);
+    const ext = name.substring(lastDot + 1);
+    console.log("ext: ", ext);
+    setTipoArchivo(ext);
+    setNombreArchivo(fileName);
+    return ext;
+  }
 
-  //   const newArray = rows.map( (row, i) => {
-  //       const values = row.split(delim);
-  //       const obj = Object.assign({}, ...Object.entries({...headers}).map(([e, a]) => values[e]?({[JSON.parse(a)]: values[e]}):null));
-  //       // console.log("obj");
-  //       // console.log(obj);
-  //       return obj;
-  //       // return {Date: values[0], Days: values[1], Cases: values[2], Deaths: values[3]};
-  //   })
-  //   setHead(...[headers]);
-  //   setCsvArray([...newArray]);
-  //   // makeRequest();
-  // }
-  // ::::::::::   B64  ::::::::::
+  const inputHandler = (e) => {
+    console.log(e);
+    const ext = getFileNameWithExt(e);
+    if(ext == 'xlsx'){
+      console.log("Tipo Excel");
+      // ========  API REQ  ========
+      e.arrayBuffer().then((res) => {
+        let data = new Uint8Array(res);
+        let workbook = XLSX.read(data, {type: "array"});
+        let first_sheet_name = workbook.SheetNames[0];
+        // console.log("sheet Name", first_sheet_name);
+        let worksheet = workbook.Sheets[first_sheet_name]
+        let jsonData = XLSX.utils.sheet_to_json(worksheet, {raw: true});
+        // console.log("JSON", jsondata);
+        let json = jsonData.map((x) =>({
+          ...x,
+          ColumnName:"Value2"
+        }))
+        let fileNameWithoutExtension = e.name.substring(0, e.name.i);
+        let nombre_arch = "other\\" + fileNameWithoutExtension + ".csv";
+        let new_worksheet = XLSX.utils.json_to_sheet(json);
+        let new_workbook = XLSX.utils.book_new();
+        console.log(new_workbook);
+        XLSX.utils.book_append_sheet(new_workbook, new_worksheet, "CSV_Sheet");
+        XLSX.writeFile(new_workbook, nombre_arch);
+      })
+      // ========   end API REQ   ========
+    }else{
+      console.log("Tipo csv");
+      setArchivo(e)
+    }
+  }
+  // ::::::::::   Procesar CSV  ::::::::::
+    // const processCSV = (str, delim) => {
+    //   const headers = str.slice(0,str.indexOf('\n')).split(delim);
+    //   // console.log(headers)
+    //   const rows = str.slice(str.indexOf('\n')+1).split('\n');
+
+    //   const newArray = rows.map( (row, i) => {
+    //       const values = row.split(delim);
+    //       const obj = Object.assign({}, ...Object.entries({...headers}).map(([e, a]) => values[e]?({[JSON.parse(a)]: values[e]}):null));
+    //       // console.log("obj");
+    //       // console.log(obj);
+    //       return obj;
+    //       // return {Date: values[0], Days: values[1], Cases: values[2], Deaths: values[3]};
+    //   })
+    //   setHead(...[headers]);
+    //   setCsvArray([...newArray]);
+    //   // makeRequest();
+    // }
+    // ::::::::::   B64  ::::::::::
   
   // ::::::::::   SUBMIT  ::::::::::
   const submit = () => {
-    const file = csvFile;
+    const file = archivo;
+
     const reader = new FileReader();
-    Papa.parse(csvFile, {
+    Papa.parse(archivo, {
       complete: function(results){
         // console.log(results.data);
         let data = results.data;
@@ -75,7 +124,6 @@ function Tables() {
           i && temp.push(i)
         data = temp;
         // console.log(data);
-        
         // ========  axios  ========
         axios({
           method: "post",
@@ -103,10 +151,7 @@ function Tables() {
         // ========   end axios   ========
       }
     });
-    // let formData = new FormData();
-    // formData.append("file", file);
-    // // console.log(file);
-    // console.log(formData);
+
     reader.onload = function(e) {
         let text = e.target.result.replace(/^\s*(\r)/gm, "");
         const delim = CSV.detect(text);
@@ -116,10 +161,10 @@ function Tables() {
         setDatos(text);
         let headers = text.slice(0,text.indexOf('\n'))
         headers = headers.replace(/^\s*(\r)/gm, "");
+        // headers = headers.replace(/^(\r)/gm, "");
         let headers_arr = headers.split(delim);
         for (let i = 0; i < headers_arr.length; i++) {
-          headers_arr[i] = headers_arr[i].replace(/\s/g, "");
-          
+          headers_arr[i] = headers_arr[i].replace(/\r/g, "");
         }
         console.log(headers_arr);
         setHead(headers_arr);
@@ -144,9 +189,10 @@ function Tables() {
             <Input
                 type='file'
                 accept='.csv, .xlsx, .json'
-                id='csvFile'
+                id='archivo'
                 onChange={(e) => {
-                    setCsvFile(e.target.files[0])
+                  getFileNameWithExt(e.target.files[0])
+                  inputHandler(e.target.files[0])
                 }}
             >
             </Input>
@@ -156,7 +202,7 @@ function Tables() {
                 className="animation-on-hover"
                 onClick={(e) => {
                   e.preventDefault()
-                  if(csvFile)submit()
+                  if(archivo)submit()
               }}>
                 Cargar
             </Button>

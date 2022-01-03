@@ -1,5 +1,5 @@
 # from flask_restful import Api, Resource, reqparse, render_template, abort
-from flask import Blueprint, redirect, url_for, request
+from flask import Blueprint, redirect, url_for, request, jsonify
 from flask_cors import CORS, cross_origin
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,23 +14,27 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.metrics import mean_squared_error, r2_score
 
 
-def reportar_7(eje_x, eje_y, col, filtro, pred):
-    # print("entro a reportar_1")
-    # ||||||||||||||    LINEAL  ||||||||||||||
-    # Parametrizacion y filtrado
+# ******* 7: "Tendencia del número de infectados por día de un País." *******
+def reportar_7(eje_x, eje_y, col, filtro, pred, es_fecha):
+    # print("entro a reportar_7")
+    # Lectura del archivo
     df = pd.read_csv('csv_file.csv')
+    # Filtrado
     df = df.loc[df[col]==filtro,]
+    # Parametrizando fecha
+    if es_fecha:
+        df[eje_x] = pd.DatetimeIndex(df[eje_x])
+    # Parametrizando ejes
     x = np.asarray(df[eje_x]).reshape(-1,1)
-    # df[eje_x] = pd.DatetimeIndex(df[eje_x])
     x_data = df[eje_x]
     y = df[eje_y]
-    pf = PolynomialFeatures(degree = 5)
-    
-    x_trans = pf.fit_transform(x)
+    # ||||||||||||||    LINEAL  ||||||||||||||
     regr = linear_model.LinearRegression()
+    # Entrenando el modelo lin
     regr.fit(x,y)
+    # Realizando predicicion lin
     prediccion = regr.predict([[pred]]) # Prediccion
-    regr.fit(x_trans,y)
+    
     # print("x\n")
     # print(type(x))
     # print(x)
@@ -39,21 +43,37 @@ def reportar_7(eje_x, eje_y, col, filtro, pred):
     # print(y)    
     
     # ||||||||||||||    POLINOMIAL  ||||||||||||||
+    # Indicando el grado de la distribucion polinomial
+    pf = PolynomialFeatures(degree = 5)
+    x_trans = pf.fit_transform(x)
+    # Entrenando el modelo pol
+    regr.fit(x_trans,y)
+    # Realizando predicicion pol
     y_pred = regr.predict(x_trans)
+    # rmse y r2
     rmse = np.sqrt(mean_squared_error(y, y_pred))
     r2 = r2_score(y, y_pred)
     # print("y_pred\n")
     # print(type(y_pred))
     # print(y_pred)
+    # ****  GRAFICA  **** 
     plt.scatter(x, y, color='black')
     plt.plot(x, y_pred, color='blue', linewidth=3)
     # plt.show()
     
-    # Preparando variables a devolver
-    x_json = json.dumps(x_data.tolist())
+    # Preparando variables a devolver en peticion
+    if es_fecha:
+        print("FECHA")
+        # x_data = df[eje_x].astype(str)
+        x_json = json.dumps(x.tolist())
+    else:
+        x_json = json.dumps(x_data.tolist())
+    
     y_json = json.dumps(y.tolist())
     pred_json =  json.dumps(prediccion.tolist())
-
+    # print(x_json)
+    # print(type(arr_data))
+    
     # Generando imagen en B64
     s = io.BytesIO()
     figure = plt.gcf()
@@ -63,12 +83,22 @@ def reportar_7(eje_x, eje_y, col, filtro, pred):
     s = base64.b64encode(s.getvalue()).decode("utf-8").replace("\n", "")
     imgb64 = 'data:image/png;base64,%s' % s
     img64_json = json.dumps(imgb64)
-    print(imgb64)
+    # print(imgb64)
+    
+    # JSON response
     ret = {
         "eje_x": x_json,
         "eje_y": y_json,
+        # "arr_data": arr_data,
+        # "y_pred": y_pred.tolist(),
+        # "img64": str(s),
         "img64": img64_json,
         "pred": pred_json
         }
+    # # print(ret)
+    # ret_json = json.dumps(ret)
+    # print(ret_json)
+    # return ret_json
+    # return "ret_json"
+    # plt.show()
     return ret
-    # ||||||||||||||    END PANDAS  ||||||||||||||

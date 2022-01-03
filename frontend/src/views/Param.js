@@ -34,12 +34,14 @@ import {
   Row,
   Col,
   UncontrolledDropdown,
+  InputGroupText,
 } from "reactstrap";
 
 function UserProfile() {
   const [col, setCol] = useState();
   const [x, setX] = useState();
   const [y, setY] = useState();
+  const [isDate, setIsDate] = useState(false);
   const [reporte, setReporte] = useState();
   const [valor, setValor] = useState();
   const [pred, setPred] = useState();
@@ -66,31 +68,7 @@ function UserProfile() {
   // console.log(headers_arr);
   // console.log(headers_arr.length);
   // const [header, setHeaders] = useState();
-  // const reporte_arr = ["Tendencia de la infección por Covid-19 en un País.",
-  // "Predicción de Infertados en un País.",
-  // "Indice de Progresión de la pandemia.",
-  // "Predicción de mortalidad por COVID en un Departamento.",
-  // "Predicción de mortalidad por COVID en un País.",
-  // "Análisis del número de muertes por coronavirus en un País.",
-  // "Tendencia del número de infectados por día de un País.",
-  // "Predicción de casos de un país para un año.",
-  // "Tendencia de la vacunación de en un País.",
-  // "Ánalisis Comparativo de Vacunaciópn entre 2 paises.",
-  // "Porcentaje de hombres infectados por covid-19 en un País desde el primer caso activo.",
-  // "Ánalisis Comparativo entres 2 o más paises o continentes.",
-  // "Muertes promedio por casos confirmados y edad de covid 19 en un País.",
-  // "Muertes según regiones de un país - Covid 19.",
-  // "Tendencia de casos confirmados de Coronavirus en un departamento de un País.",
-  // "Porcentaje de muertes frente al total de casos en un país, región o continente.",
-  // "Tasa de comportamiento de casos activos en relación al número de muertes en un continente.",
-  // "Comportamiento y clasificación de personas infectadas por COVID-19 por municipio en un País.",
-  // "Predicción de muertes en el último día del primer año de infecciones en un país.",
-  // "Tasa de crecimiento de casos de COVID-19 en relación con nuevos casos diarios y tasa de muerte por COVID-19.",
-  // "Predicciones de casos y muertes en todo el mundo - Neural Network MLPRegressor.",
-  // "Tasa de mortalidad por coronavirus (COVID-19) en un país.",
-  // "Factores de muerte por COVID-19 en un país.",
-  // "Comparación entre el número de casos detectados y el número de pruebas de un país.",
-  // "Predicción de casos confirmados por día."]
+
   var reporte_arr = [{index: 1, reporte: "Tendencia de la infección por Covid-19 en un País."},
   {index: 2, reporte: "Predicción de Infertados en un País."},
   {index: 3, reporte: "Indice de Progresión de la pandemia."},
@@ -215,6 +193,15 @@ function UserProfile() {
       });
     }
   }
+  // Manejando el check
+  const handleCheckChange = (e) => {
+    checkHeaders();
+    let valor = e.target.checked;
+    console.log(valor);
+    if(valor !== undefined){
+      setIsDate(valor);
+    }
+  }
   // Enviando datos al server
   const setParametros = () => {
     if(reporte != null){
@@ -223,11 +210,19 @@ function UserProfile() {
           if(x != null){
             if(y != null){
               if(pred != null){
+                if(x == y){
+                  Swal.fire(
+                    '¿Qué deseas analizar?',
+                    '¡Seleccionaste los mismos parametros para los ejes X y Y!',
+                    'question'
+                  );
+                }
                 const params_data = {
                   reporte: reporte,
                   col: col,
                   valor: valor,
                   x: x,
+                  isDate: isDate,
                   y: y,
                   pred: pred
                 }
@@ -389,6 +384,7 @@ function UserProfile() {
                               {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
                           </select>
                         </UncontrolledDropdown>
+                        
                       </FormGroup>
                     </Col>
                     <Col></Col>
@@ -404,6 +400,16 @@ function UserProfile() {
                               {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
                           </select>
                         </UncontrolledDropdown>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col md="4">
+                      <FormGroup>
+                        <Input
+                          onChange={handleCheckChange}
+                          type="checkbox" />{' '}
+                        ¿Fecha?
                       </FormGroup>
                     </Col>
                   </Row>

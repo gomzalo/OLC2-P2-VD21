@@ -55,18 +55,17 @@ def post():
         pred = request.json['pred']
         x = request.json['x']
         y = request.json['y']
-        print("\nReporte: " + str(reporte_key) + " - " + reporte + "\nx: " + x + ", y: " + y + ", col: " + col + "\nvalor: " + valor + ", pred: " + str(pred) + '\n')
+        is_date = request.json['isDate']
+        print("\nReporte: " + str(reporte_key) + " - " + reporte + "\nx: " + x + ", y: " + y + ", col: " + col + "\nvalor: " + valor + ", pred: " + str(pred) + ", isDate: " + str(is_date) + '\n')
         if reporte_key == 1:
-            if(type(x) != np.number):
-                df[x] = pd.DatetimeIndex(df[x])
-            res_r1 = reportar_1(x, y, col, valor, pred)
+            res_r1 = reportar_1(x, y, col, valor, pred, is_date)
             return{
                 'resultStatus': 'SUCCESS',
                 'message': "Reporte 1 generado correctamente",
                 'data': res_r1
             }
         elif reporte_key == 7:
-            res_r7 = reportar_7(x, y, col, valor, pred)
+            res_r7 = reportar_7(x, y, col, valor, pred, is_date)
             return{
                 'resultStatus': 'SUCCESS',
                 'message': "Reporte 7 generado correctamente",
