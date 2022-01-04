@@ -29,19 +29,22 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 // import 'bootstrap/dist/css/bootstrap.min.css';  
 
 import ThemeContextWrapper from "./components/ThemeWrapper/ThemeWrapper";
+import DataController from "./contexts/DataController";
 import BackgroundColorWrapper from "./components/BackgroundColorWrapper/BackgroundColorWrapper";
 
 ReactDOM.render(
-  <ThemeContextWrapper>
-    <BackgroundColorWrapper>
-      <BrowserRouter>
-        <Switch>
-          <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
-          <Route path="/rtl" render={(props) => <RTLLayout {...props} />} />
-          <Redirect from="/" to="/admin/inicio" />
-        </Switch>
-      </BrowserRouter>
-    </BackgroundColorWrapper>
-  </ThemeContextWrapper>,
+  <DataController>
+    <ThemeContextWrapper>
+      <BackgroundColorWrapper>
+        <BrowserRouter>
+          <Switch>
+            <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
+            <Route path="/rtl" render={(props) => <RTLLayout {...props} />} />
+            <Redirect from="/" to="/admin/inicio" />
+          </Switch>
+        </BrowserRouter>
+      </BackgroundColorWrapper>
+    </ThemeContextWrapper>
+  </DataController>,
   document.getElementById("root")
 );

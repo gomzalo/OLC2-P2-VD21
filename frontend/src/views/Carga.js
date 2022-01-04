@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import {React, useState} from "react";
+import {React, useState, useContext } from "react";
 import {Button} from 'reactstrap';
 import * as CSV from 'csv-string';
 import axios from 'axios';
@@ -24,6 +24,7 @@ import Papa from 'papaparse';
 import XLSX from 'xlsx';
 import fs from 'fs';
 import { Parser } from 'json2csv'
+import { DataContext } from "contexts/DataController";
 // import Proptypes from 'prop-types';
 // import { CSVLink } from 'react-csv';
 // reactstrap components
@@ -44,6 +45,7 @@ function Tables() {
   const [tipoArchivo, setTipoArchivo] = useState();
   const [nombreArchivo, setNombreArchivo] = useState();
   const [head, setHead] = useState([]);
+  const [csvArr, setCSVArr] = useContext(DataContext);
   const [datos, setDatos] = useState()
   
   const getFileNameWithExt = (event) => {
@@ -59,6 +61,16 @@ function Tables() {
   }
 
   const inputHandler = (e) => {
+    // if(e.size > 22000000){
+    //   // alert("File is too big!");
+    //   Swal.fire({
+    //     icon: 'error',
+    //     title: 'Oops...',
+    //     text: '¡El archivo es demasiado grande!'
+    //   });
+    //   // this.value = "";
+    //   return;
+    // };
     console.log(e);
     const ext = getFileNameWithExt(e);
     //  :::::::::::::::::  EXCEL  :::::::::::::::::
@@ -176,8 +188,10 @@ function Tables() {
           i && temp.push(i)
         data = temp;
         // Array con contenido
-        console.log(data);
-        localStorage.setItem("csv_arr", JSON.stringify(data));
+        // console.log(data);
+        // localStorage.clear();
+        // localStorage.setItem("csv_arr", JSON.stringify(data));
+        setCSVArr(data);
         // ========  axios  ========
         axios({
           method: "post",

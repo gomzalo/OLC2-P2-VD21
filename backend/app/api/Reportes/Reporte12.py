@@ -1,5 +1,5 @@
 # from flask_restful import Api, Resource, reqparse, render_template, abort
-from flask import Blueprint, redirect, url_for, request, jsonify
+from flask import Blueprint, redirect, url_for, request
 from flask_cors import CORS, cross_origin
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,9 +14,9 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.metrics import mean_squared_error, r2_score
 
 
-# ******* 7: "Tendencia del número de infectados por día de un País." *******
-def reportar_7(eje_x, eje_y, col, filtro, es_fecha):
-    # print("entro a reportar_7")
+# ******* 12: "Ánalisis Comparativo entres 2 o más paises o continentes." *******
+def reportar_12(eje_x, eje_y, col, filtro, pred, es_fecha):
+    # print("entro a reportar_2")
     # Lectura del archivo
     df = pd.read_csv('csv_file.csv')
     # Filtrado
@@ -33,7 +33,7 @@ def reportar_7(eje_x, eje_y, col, filtro, es_fecha):
     # Entrenando el modelo lin
     regr.fit(x,y)
     # Realizando predicicion lin
-    # prediccion = regr.predict([[pred]]) # Prediccion
+    prediccion = regr.predict([[pred]]) # Prediccion
     
     # print("x\n")
     # print(type(x))
@@ -58,7 +58,7 @@ def reportar_7(eje_x, eje_y, col, filtro, es_fecha):
     # print(y_pred)
     # ****  GRAFICA  **** 
     plt.scatter(x, y, color='black')
-    plt.title("Tendencia del número de infectados por día en " + str(filtro))
+    plt.title("Predicción de Infectados en " + str(filtro))
     plt.xlabel(eje_x)
     plt.ylabel(eje_y)
     plt.plot(x, y_pred, color='blue', linewidth=3)
@@ -71,9 +71,8 @@ def reportar_7(eje_x, eje_y, col, filtro, es_fecha):
         x_json = json.dumps(x.tolist())
     else:
         x_json = json.dumps(x_data.tolist())
-    
     y_json = json.dumps(y.tolist())
-    # pred_json =  json.dumps(prediccion.tolist())
+    pred_json =  json.dumps(prediccion.tolist())
     # print(x_json)
     rmse_json = json.dumps(rmse.tolist())
     coeficiente = regr.coef_
@@ -98,7 +97,10 @@ def reportar_7(eje_x, eje_y, col, filtro, es_fecha):
         # "y_pred": y_pred.tolist(),
         # "img64": str(s),
         "img64": img64_json,
-        "pred": 0
+                "pred": pred_json,
+        "rmse": rmse_json,
+        "r2": r2,
+        "coef": coef_json
         }
     # # print(ret)
     # ret_json = json.dumps(ret)

@@ -44,7 +44,7 @@ def reportar_1(eje_x, eje_y, col, filtro, es_fecha):
     
     # ||||||||||||||    POLINOMIAL  ||||||||||||||
     # Indicando el grado de la distribucion polinomial
-    pf = PolynomialFeatures(degree = 5)
+    pf = PolynomialFeatures(degree = 8)
     x_trans = pf.fit_transform(x)
     # Entrenando el modelo pol
     regr.fit(x_trans,y)
@@ -65,12 +65,19 @@ def reportar_1(eje_x, eje_y, col, filtro, es_fecha):
     # plt.show()
     
     # Preparando variables a devolver en peticion
-    x_json = json.dumps(x_data.tolist())
+    if es_fecha:
+        print("FECHA")
+        # x_data = df[eje_x].astype(str)
+        x_json = json.dumps(x.tolist())
+    else:
+        x_json = json.dumps(x_data.tolist())
     y_json = json.dumps(y.tolist())
     # pred_json =  json.dumps(prediccion.tolist())
     # print(x_json)
-    # print(type(arr_data))
-    
+    # print(type(arr_data));
+    rmse_json = json.dumps(rmse.tolist())
+    coeficiente = regr.coef_
+    coef_json = json.dumps(coeficiente.tolist())
     # Generando imagen en B64
     s = io.BytesIO()
     figure = plt.gcf()
@@ -82,16 +89,18 @@ def reportar_1(eje_x, eje_y, col, filtro, es_fecha):
     img64_json = json.dumps(imgb64)
     # print(imgb64)
     
+    # resultado = 'La tendencia de infección en ${col} se representa con el módelo polinomial, ademas se muestran los coeficientes.'
     # JSON response
     ret = {
         "eje_x": x_json,
         "eje_y": y_json,
-        # "arr_data": arr_data,
-        # "y_pred": y_pred.tolist(),
-        # "img64": str(s),
-        "img64": img64_json
-        # "pred": pred_json
-        }
+        "img64": img64_json,
+        "pred": 0,
+        # "resultado": resultado,
+        "rmse": rmse_json,
+        "r2": r2,
+        "coef": coef_json
+    }
     # # print(ret)
     # ret_json = json.dumps(ret)
     # print(ret_json)

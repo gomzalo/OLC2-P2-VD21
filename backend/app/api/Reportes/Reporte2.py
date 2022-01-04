@@ -65,12 +65,19 @@ def reportar_2(eje_x, eje_y, col, filtro, pred, es_fecha):
     # plt.show()
     
     # Preparando variables a devolver en peticion
-    x_json = json.dumps(x_data.tolist())
+    if es_fecha:
+        print("FECHA")
+        # x_data = df[eje_x].astype(str)
+        x_json = json.dumps(x.tolist())
+    else:
+        x_json = json.dumps(x_data.tolist())
     y_json = json.dumps(y.tolist())
     pred_json =  json.dumps(prediccion.tolist())
     # print(x_json)
-    # print(type(arr_data))
-    
+    # print(type(arr_data));
+    rmse_json = json.dumps(rmse.tolist())
+    coeficiente = regr.coef_
+    coef_json = json.dumps(coeficiente.tolist())
     # Generando imagen en B64
     s = io.BytesIO()
     figure = plt.gcf()
@@ -90,7 +97,10 @@ def reportar_2(eje_x, eje_y, col, filtro, pred, es_fecha):
         # "y_pred": y_pred.tolist(),
         # "img64": str(s),
         "img64": img64_json,
-        "pred": pred_json
+        "pred": pred_json,
+        "rmse": rmse_json,
+        "r2": r2,
+        "coef": coef_json
         }
     # # print(ret)
     # ret_json = json.dumps(ret)

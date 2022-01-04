@@ -15,13 +15,15 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import { React, useState } from "react";
 // nodejs library that concatenates classes
 // import classNames from "classnames";
 // react plugin used to create charts
 import { Line } from "react-chartjs-2";
 // import axios from 'axios';
 import font from 'assets/fonts/times.ttf'
+import font_bold from 'assets/fonts/times-bold.ttf'
+import font_italic from 'assets/fonts/times-italic.ttf'
 // reactstrap components
 import {
   // Button,
@@ -49,39 +51,44 @@ import {
 // Create styles
 
 function Dashboard(props) {
-  var reporte_arr = [{index: 1, reporte: "Tendencia de la infección por Covid-19 en un País."},
-  {index: 2, reporte: "Predicción de Infertados en un País."},
-  {index: 3, reporte: "Indice de Progresión de la pandemia."},
-  {index: 4, reporte: "Predicción de mortalidad por COVID en un Departamento."},
-  {index: 5, reporte: "Predicción de mortalidad por COVID en un País."},
-  {index: 6, reporte: "Análisis del número de muertes por coronavirus en un País."},
-  {index: 7, reporte: "Tendencia del número de infectados por día de un País."},
-  {index: 8, reporte: "Predicción de casos de un país para un año."},
-  {index: 9, reporte: "Tendencia de la vacunación de en un País."},
-  {index: 10, reporte: "Ánalisis Comparativo de Vacunaciópn entre 2 paises."},
-  {index: 11, reporte: "Porcentaje de hombres infectados por covid-19 en un País desde el primer caso activo."},
-  {index: 12, reporte: "Ánalisis Comparativo entres 2 o más paises o continentes."},
-  {index: 13, reporte: "Muertes promedio por casos confirmados y edad de covid 19 en un País."},
-  {index: 14, reporte: "Muertes según regiones de un país - Covid 19."},
-  {index: 15, reporte: "Tendencia de casos confirmados de Coronavirus en un departamento de un País."},
-  {index: 16, reporte: "Porcentaje de muertes frente al total de casos en un país, región o continente."},
-  {index: 17, reporte: "Tasa de comportamiento de casos activos en relación al número de muertes en un continente."},
-  {index: 18, reporte: "Comportamiento y clasificación de personas infectadas por COVID-19 por municipio en un País."},
-  {index: 19, reporte: "Predicción de muertes en el último día del primer año de infecciones en un país."},
-  {index: 20, reporte: "Tasa de crecimiento de casos de COVID-19 en relación con nuevos casos diarios y tasa de muerte por COVID-19."},
-  {index: 21, reporte: "Predicciones de casos y muertes en todo el mundo - Neural Network MLPRegressor."},
-  {index: 22, reporte: "Tasa de mortalidad por coronavirus (COVID-19) en un país."},
-  {index: 23, reporte: "Factores de muerte por COVID-19 en un país."},
-  {index: 24, reporte: "Comparación entre el número de casos detectados y el número de pruebas de un país."},
-  {index: 25, reporte: "Predicción de casos confirmados por día."}];
+  const [prediccion, setPrediccion] = useState(0);
+  var reporte_arr = [
+    {index: 1, reporte: "Tendencia de la infección por COVID-19 en un país."},
+    {index: 2, reporte: "Predicción de infectados en un país."},
+    {index: 3, reporte: "Índice de progresión de la pandemia."},
+    {index: 4, reporte: "Predicción de mortalidad por COVID en un departamento."},
+    {index: 5, reporte: "Predicción de mortalidad por COVID en un país."},
+    {index: 6, reporte: "Análisis del número de muertes por coronavirus en un país."},
+    {index: 7, reporte: "Tendencia del número de infectados por día de un país."},
+    {index: 8, reporte: "Predicción de casos de un país para un año."},
+    {index: 9, reporte: "Tendencia de la vacunación en un país."},
+    {index: 10, reporte: "Ánalisis comparativo de vacunación entre 2 paises."},
+    {index: 11, reporte: "Porcentaje de hombres infectados por COVID-19 en un país desde el primer caso activo."},
+    {index: 12, reporte: "Ánalisis comparativo entre 2 o más paises o continentes."},
+    {index: 13, reporte: "Muertes promedio por casos confirmados y edad de COVID-19 en un país."},
+    {index: 14, reporte: "Muertes según regiones de un país por COVID-19."},
+    {index: 15, reporte: "Tendencia de casos confirmados de coronavirus en un departamento de un país."},
+    {index: 16, reporte: "Porcentaje de muertes frente al total de casos en un país, región o continente."},
+    {index: 17, reporte: "Tasa de comportamiento de casos activos en relación al número de muertes en un continente."},
+    {index: 18, reporte: "Comportamiento y clasificación de personas infectadas por COVID-19 por municipio en un país."},
+    {index: 19, reporte: "Predicción de muertes en el último día del primer año de infecciones en un país."},
+    {index: 20, reporte: "Tasa de crecimiento de casos de COVID-19 en relación con nuevos casos diarios y tasa de muerte por COVID-19."},
+    {index: 21, reporte: "Predicciones de casos y muertes en todo el mundo - Neural Network MLPRegressor."},
+    {index: 22, reporte: "Tasa de mortalidad por coronavirus (COVID-19) en un país."},
+    {index: 23, reporte: "Factores de muerte por COVID-19 en un país."},
+    {index: 24, reporte: "Comparación entre el número de casos detectados y el número de pruebas de un país."},
+    {index: 25, reporte: "Predicción de casos confirmados por día."}
+  ];
   let reporte_map = new Map();
   
   const headers = localStorage.getItem("headers");
   const reporte_activo_key = localStorage.getItem("reporte_activo");
   const datos_grafica = localStorage.getItem("datos_grafica");
   const params_grafica = localStorage.getItem("params_grafica");
+  const datos_rep = localStorage.getItem("datos_rep");
   let params_data_json = JSON.parse(params_grafica);
   let res_pred = JSON.parse(datos_grafica);
+  let datos_rep_json = JSON.parse(datos_rep);
   console.log(res_pred);
   /**
   *   const params_data = {
@@ -110,15 +117,26 @@ function Dashboard(props) {
     data:
       eje_x,
       eje_y,
-      pred
+      pred,
+      resultado,
+      rmse,
+      r2,
   */
   const eje_x = JSON.parse(res_pred.data.eje_x);
   const eje_y = JSON.parse(res_pred.data.eje_y);
-  let prediccao = 0;
-  if(res_pred.hasOwnProperty('pred')){
-    prediccao = JSON.parse(res_pred.data.pred);
-  }
+  const prediccao = JSON.parse(res_pred.data.pred);
   const img64 = JSON.parse(res_pred.data.img64);
+  // const resultado = res_pred.data.resultado;
+  const rmse = JSON.parse(res_pred.data.rmse);
+  const r2 = JSON.parse(res_pred.data.r2);
+  const coef = JSON.parse(res_pred.data.coef);
+  /*
+  ::::::  datos_reporte   ::::::
+      dis,
+      conc,
+  */
+  const diseno = datos_rep_json.diseno;
+  const conclusion = datos_rep_json.conclusion;
   // console.log(img64);
   // const data_arr = res_pred.data.arr_data;
   let data_arr = [];
@@ -127,8 +145,6 @@ function Dashboard(props) {
   }
   // console.log("data_arr");
   // console.log(data_arr);
-
-  
   let reporte_activo = "";
   reporte_arr.forEach(element => {
     reporte_map.set(element.index, element.reporte);
@@ -138,31 +154,108 @@ function Dashboard(props) {
   });
   console.log(reporte_activo);
   // :::::::::::::::::::::::::  PDF  :::::::::::::::::::::::::
-  // Fuente
+  // Registro de fuentes
   Font.register({family: 'Times New Roman', format: "truetype", src: font })
+  Font.register({family: 'Times New Roman Bold', format: "truetype", src: font_bold })
+  Font.register({family: 'Times New Roman Italic', format: "truetype", src: font_italic })
   // Create styles
   const styles = StyleSheet.create({
     page: {
       fontFamily: 'Times New Roman',
-      flex: 1,
-      flexDirection: 'row',
-      flexWrap: 'wrap',
+      // flex: 1,
+      // flexDirection: 'row',
+      // flexWrap: 'wrap',
+      padding: 10,
       backgroundColor: '#FFFF'
     },
     title: {
-      fontSize: 24,
-      textAlign: 'center'
+      display: 'block',
+      fontSize: 30,
+      textAlign: 'center',
+      marginTop: 1,
+      marginBottom: 1,
+      marginLeft: 0,
+      marginRight: 0,
+      padding: 10,
+    },
+    subtitle: {
+      display: 'block',
+      fontSize: 13,
+      textAlign: 'center',
+      marginTop: 1,
+      marginBottom: 1,
+      marginLeft: 0,
+      marginRight: 0,
+      padding: 10,
+    },
+    h2: {
+      display: 'block',
+      fontSize: 20,
+      textAlign: 'center',
+      marginTop: 1,
+      marginBottom: 1,
+      marginLeft: 0,
+      marginRight: 0,
+      padding: 10,
+    },
+    h3: {
+      display: 'block',
+      fontSize: 16,
+      textAlign: 'center',
+      marginTop: 1,
+      marginBottom: 1,
+      marginLeft: 0,
+      marginRight: 0,
+      padding: 10,
+    },
+    h4: {
+      // display: 'block',
+      fontSize: 13,
+      textAlign: 'center',
+      marginTop: 0.5,
+      marginBottom: 0.5,
+      marginLeft: 0,
+      marginRight: 0,
+      padding: 1,
+    },
+    abs: {
+      // display: 'block',
+      fontFamily: 'Times New Roman Bold',
+      fontSize: 10,
+      textAlign: 'justify',
+      marginTop: 0,
+      marginBottom: 0,
+      marginLeft: 0,
+      marginRight: 0,
+      padding: 1,
+    },
+    italic: {
+      // display: 'block',
+      fontFamily: 'Times New Roman Italic',
+      fontSize: 9,
+      textAlign: 'left',
+      marginTop: 0,
+      marginBottom: 0,
+      marginLeft: 0,
+      marginRight: 0,
+      padding: 1,
     },
     footer: {
-      fontSize: 10,
+      fontSize: 8,
       textAlign: 'left'
     },
     texto: {
-      fontSize: 12,
+      display: 'block',
+      fontSize: 11,
       flex: 0,
-      flexDirection: 'col',
+      marginTop: 1,
+      marginBottom: 1,
+      marginLeft: 0,
+      marginRight: 0,
+      padding: 15,
+      // flexDirection: 'row',
       flexWrap: 'wrap',
-      textAlign: 'left'
+      textAlign: 'justify'
     },
     section: {
       margin: 25,
@@ -170,32 +263,242 @@ function Dashboard(props) {
       flexGrow: 1
     },
     col: {
-      margin: 5,
+      margin: 15,
       padding: 10,
       // width: '50%',
       flexGrow: 1
-    }
+    },
+    row: {
+      margin: 20,
+      padding: 10,
+      // width: '50%',
+      flex: 1,
+      flexDirection: 'row',
+      flexGrow: 1
+    },
+    left: {
+      // width: '50%',// <- working alternative
+      flexGrow: 0,
+      flexShrink: 1,
+      flexBasis: 200,
+      },
+    right: {
+      padding: 25,
+      // width: "50%", // <- working alternative
+      flexShrink: 1,
+      flexGrow: 2,
+      },
   });
 
   // Create Document Component
   const MyDocument = () => (
     <Document>
-      <Page size="A4" style={styles.page}>
-        <View style={styles.section}>
-          <Text style={styles.title}
-          >{reporte_activo}</Text>
+      <Page wrap size="A4" style={styles.page}>
+        <Text style={styles.title}>
+          {reporte_activo}
+        </Text>
+        <Text style={styles.h4}>Universidad de San Carlos de Guatemala</Text>
+        <Text style={styles.h4}>Facultad de Ingenieria, Escuela de Ciencias y Sistemas</Text>
+        <Text style={styles.h4}>Laboratorio de Organización de Lenguajes y Compiladores 2</Text>
+        <Text style={styles.h4}>201318652 - Gonzalo Antonio García Solares</Text>
+        <View style={[styles.row, {height: 700}]}>
+          <View style={styles.left}>
+            <Text style={styles.abs}>
+              Abstract - Desde diciembre de 2019, la pandemia del virus (SARS-CoV-2)
+              y la enfermedad (COVID-19) ha estado causando estragos a nivel mundial,
+              afectando fuertemente la salud y economía.
+            </Text>
+            <Text style={styles.abs}>
+              Desde inicios de esta, se ha estado utilizando la IA para analizar su
+              comportamiento y propagación. Además, los cientificos se han apoyado de estas
+              herramientas para predecir y tratar de tomar mejores decisiones
+            </Text>
+            <Text style={styles.title}>
+            </Text>
+            <Text style={styles.h4}>
+              I.  Objetivos
+            </Text>
+            <Text style={styles.h4}>
+            </Text>
+            <Text style={styles.italic}>
+              I-A.  Generales
+            </Text>
+            <Text style={styles.h4}>
+            </Text>
+            <Text style={styles.texto}>
+              • Utilizar Scikit-Learn para el análisis de datos.
+            </Text>
+            <Text style={styles.texto}>
+              • Permitir que el usuario generar graficas y predicciones.
+            </Text>
+            <Text style={styles.title}>
+            </Text>
+            <Text style={styles.h4}>
+              II.  Marco teórico
+            </Text>
+            <Text style={styles.h4}>
+            </Text>
+            <Text style={styles.h4}>
+            </Text>
+            <Text style={styles.italic}>
+              II-A.  Regresión lineal
+            </Text>
+            <Text style={styles.h4}>
+            </Text>
+            <Text style={styles.texto}>
+              En estadística, la regresión lineal o ajuste lineal es un modelo matemático 
+              usado para aproximar la relación de dependencia entre una variable dependiente 
+              Y, m variables independientes Xi con m e Z y un término aleatorio epsilon.
+              Este modelo puede ser expresado como:
+            </Text>
+            <Text style={styles.title}>
+            </Text>
+            <Text style={styles.title}>
+            </Text>
+            <Text style={styles.title}>
+            </Text>
+            <Text style={styles.title}>
+            </Text>
+            <Text style={styles.texto}>
+              Y = Bo + B1X1 + ... + BmXm + epsilon.
+            </Text>
+            <Text style={styles.title}>
+            </Text>
+            <Text style={styles.italic}>
+              II-B.  Regresión polinomial
+            </Text>
+            <Text style={styles.texto}>
+              La Regresión Polinomial es un caso especial de la Regresión Lineal, 
+              extiende el modelo lineal al agregar predictores adicionales, 
+              obtenidos al elevar cada uno de los predictores originales a una potencia.
+              Por ejemplo, una regresión cúbica utiliza tres variables, como predictores. 
+              Este enfoque proporciona una forma sencilla de proporcionar un ajuste no lineal a los datos.
+            </Text>
+          </View>
+          <View style={styles.row}>
+            <View style={styles.left}>
+              <Text style={styles.texto}>
+                El método estándar para extender la Regresión Lineal a una relación no 
+                lineal entre las variables dependientes e independientes, ha sido reemplazar 
+                el modelo lineal con una función polinomial.
+              </Text>
+              <Text style={styles.title}>
+              </Text>
+              <Text style={styles.title}>
+              </Text>
+              <Text style={styles.title}>
+              </Text>
+              <Text style={styles.texto}>
+                Y = Bo + B1X1 + B2X^2 + B3X^3 ... + BmXm + epsilon.
+              </Text>
+              <Text style={styles.title}>
+              </Text>
+              <Text style={styles.h4}>
+                III.  Diseño experimental
+              </Text>
+              <Text style={styles.h4}>
+              </Text>
+              <Text style={styles.texto}>
+                {diseno}
+              </Text>
+              <Text style={styles.h4}>
+              </Text>
+              <Text style={styles.title}>
+              </Text>
+              <Text style={styles.title}>
+              </Text>
+              <Text style={styles.title}>
+              </Text>
+              <Text style={styles.abs}>
+                • Variable independiente (X):
+              </Text>
+              <Text style={styles.texto}>
+                {ejexL}
+              </Text>
+              <Text style={styles.h4}>
+              </Text>
+              <Text style={styles.abs}>
+                • Variable dependiente (Y):
+              </Text>
+              <Text style={styles.texto}>
+                {ejeyL}
+              </Text>
+              <Text style={styles.h4}>
+              </Text>
+              <Text style={styles.title}>
+              </Text>
+              <Text style={styles.h4}>
+                IV.  Resultados
+              </Text>
+              <Text style={styles.h4}>
+              </Text>
+              <Text style={styles.abs}>
+                • Error:
+              </Text>
+              <Text style={styles.texto}>
+                {rmse}
+              </Text>
+              <Text style={styles.h4}>
+              </Text>
+              <Text style={styles.abs}>
+                • R2:
+              </Text>
+              <Text style={styles.texto}>
+                {r2}
+              </Text>
+              <Text style={styles.h4}>
+              </Text>
+              <Text style={styles.title}>
+              </Text>
+            </View>
+            <View style={styles.right}>
+            </View>
+          </View>
         </View>
-        <View style={styles.col}>
-          <Text style={styles.texto}
-          >Se muestra la figura I, que representa el reporte y su predicción.</Text>
-        </View>
-        <View style={styles.section}>
-        <Image
-        src={img64}
-        // style={{textAlign: 'left', padding:20, margin: 10 }}
-        fixed={true}
-        ></Image>
-        <Text style={styles.footer}>Figura I</Text>
+      </Page>
+      <Page wrap size="A4" style={styles.page}>
+        <View style={[styles.row, {height: 700}]}>
+        <View style={styles.left}>
+          <Text style={styles.h4}>
+          </Text>
+          <Text style={styles.abs}>
+            • Coeficientes:
+          </Text>
+          <Text style={styles.texto}>
+            {coef}
+          </Text>
+          <Text style={styles.h4}>
+          </Text>
+          <Text style={styles.title}>
+          </Text>
+          <Text style={styles.title}>
+          </Text>
+          <Text style={styles.title}>
+          </Text>
+          <Text style={styles.title}>
+          </Text>
+          <Text style={styles.h4}>
+            V.  Conclusiones
+          </Text>
+          <Text style={styles.h4}>
+          </Text>
+          <Text style={styles.texto}>
+            {conclusion}
+          </Text>
+          <Text style={styles.title}>
+          </Text>
+          <Text style={styles.title}>
+          </Text>
+          <Text style={styles.title}>
+          </Text>
+          <Text style={styles.h4}>
+          </Text>
+          <Image
+            src={img64}
+            fixed={true}
+          ></Image>
+          <Text style={styles.footer}>Figura I</Text>
+          </View>
         </View>
       </Page>
     </Document>
