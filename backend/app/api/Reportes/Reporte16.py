@@ -108,7 +108,7 @@ def reportar_16(eje_x, eje_y, col, filtro, muerte, es_fecha):
         # "y_pred": y_pred.tolist(),
         # "img64": str(s),
         "img64": img64_json,
-        "pred": str(percent) + '%',
+        "pred": percent,
         "rmse": rmse_json,
         "r2": r2,
         "coef": coef_json

@@ -109,7 +109,7 @@ def reportar_11(eje_x, eje_y, col, filtro, col_genero, es_fecha):
         # "y_pred": y_pred.tolist(),
         # "img64": str(s),
         "img64": img64_json,
-        "pred": str(percent) + '%',
+        "pred": percent,
         "rmse": rmse_json,
         "r2": r2,
         "coef": coef_json
