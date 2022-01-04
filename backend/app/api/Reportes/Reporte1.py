@@ -19,6 +19,8 @@ def reportar_1(eje_x, eje_y, col, filtro, es_fecha):
     # print("entro a reportar_1")
     # Lectura del archivo
     df = pd.read_csv('csv_file.csv')
+    df = df.fillna(0)
+
     # Filtrado
     df = df.loc[df[col]==filtro,]
     # Parametrizando fecha

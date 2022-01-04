@@ -19,6 +19,7 @@ def reportar_7(eje_x, eje_y, col, filtro, es_fecha):
     # print("entro a reportar_7")
     # Lectura del archivo
     df = pd.read_csv('csv_file.csv')
+    df = df.fillna(0)
     # Filtrado
     df = df.loc[df[col]==filtro,]
     # Parametrizando fecha
@@ -98,7 +99,10 @@ def reportar_7(eje_x, eje_y, col, filtro, es_fecha):
         # "y_pred": y_pred.tolist(),
         # "img64": str(s),
         "img64": img64_json,
-        "pred": 0
+        "pred": 0,
+        "rmse": rmse_json,
+        "r2": r2,
+        "coef": coef_json
         }
     # # print(ret)
     # ret_json = json.dumps(ret)

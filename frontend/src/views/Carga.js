@@ -124,6 +124,10 @@ function Tables() {
       reader.readAsText(e, "UTF-8");
       reader.onload = function (e) {
         let data = e.target.result;
+        // console.log(data);
+        // console.log(typeof data);
+        // let prstring = JSON.stringify(data).replace(/['"]+/g, '');
+        // console.log(prstring);
         let parsed_data = JSON.parse(data);
         for (const item in parsed_data[0]) {
           fields.push(item)
@@ -136,9 +140,10 @@ function Tables() {
           const parser = new Parser(opts);
           // Creando contenido en csv
           const csv = parser.parse(parsed_data);
-          console.log(csv);
+          let csv_p = csv.replace(/['"]+/g, '');
+          console.log(csv_p);
           // Objeto file con el contenido y tipo csv
-          let new_csv_file = new File([csv], nombre_arch, {type: "text/csv", lastModified: ''})
+          let new_csv_file = new File([csv_p], nombre_arch, {type: "text/csv", lastModified: ''})
           console.log(new_csv_file);
           setArchivo(new_csv_file)
         } catch (err) {
@@ -190,8 +195,11 @@ function Tables() {
         // Array con contenido
         // console.log(data);
         // localStorage.clear();
-        // localStorage.setItem("csv_arr", JSON.stringify(data));
-        setCSVArr(data);
+        if(file.size > 22000000){
+          setCSVArr(data);
+        }else{
+          localStorage.setItem("csv_arr", JSON.stringify(data));
+        }
         // ========  axios  ========
         axios({
           method: "post",

@@ -138,9 +138,9 @@ def post():
         # ** 6: "Análisis del número de muertes por coronavirus en un País."
         # :::::::::::::::::::  PARAMS REP 6    :::::::::::::::::::
         elif reporte_key == 6:
-            pred = request.json['pred']
-            print("pred: " + str(pred))
-            res_r6 = reportar_6(x, y, col, valor, pred, is_date)
+            # pred = request.json['pred']
+            # print("pred: " + str(pred))
+            res_r6 = reportar_6(x, y, col, valor, is_date)
             return{
                 'resultStatus': 'SUCCESS',
                 'message': "Reporte 6 generado correctamente",
@@ -169,9 +169,7 @@ def post():
         # ** 9: "Tendencia de la vacunación de en un País."
         # :::::::::::::::::::  PARAMS REP 9    :::::::::::::::::::
         elif reporte_key == 9:
-            pred = request.json['pred']
-            print("pred: " + str(pred))
-            res_r9 = reportar_9(x, y, col, valor, pred, is_date)
+            res_r9 = reportar_9(x, y, col, valor, is_date)
             return{
                 'resultStatus': 'SUCCESS',
                 'message': "Reporte 9 generado correctamente",
@@ -180,9 +178,9 @@ def post():
         # ** 10: "Ánalisis Comparativo de Vacunaciópn entre 2 paises."
         # :::::::::::::::::::  PARAMS REP 10    :::::::::::::::::::
         elif reporte_key == 10:
-            pred = request.json['pred']
-            print("pred: " + str(pred))
-            res_r10 = reportar_10(x, y, col, valor, pred, is_date)
+            valor2 = request.json['valor2']
+            print("valor2: " + str(valor2))
+            res_r10 = reportar_10(x, y, col, valor, valor2, is_date)
             return{
                 'resultStatus': 'SUCCESS',
                 'message': "Reporte 10 generado correctamente",
@@ -191,7 +189,11 @@ def post():
         # ** 11: "Porcentaje de hombres infectados por covid-19 en un País desde el primer caso activo."
         # :::::::::::::::::::  PARAMS REP 11    :::::::::::::::::::
         if reporte_key == 11:
-            res_r11 = reportar_11(x, y, col, valor, is_date)
+            # genero = request.json['genero']
+            # print("genero: " + str(genero))
+            colGen = request.json['colGen']
+            print("colGen: " + str(colGen))
+            res_r11 = reportar_11(x, y, col, valor, colGen, is_date)
             return{
                 'resultStatus': 'SUCCESS',
                 'message': "Reporte 11 generado correctamente",
@@ -200,9 +202,11 @@ def post():
         # ** 12: "Ánalisis Comparativo entres 2 o más paises o continentes."
         # :::::::::::::::::::  PARAMS REP 12    :::::::::::::::::::
         elif reporte_key == 12:
-            pred = request.json['pred']
-            print("pred: " + str(pred))
-            res_r12 = reportar_12(x, y, col, valor, pred, is_date)
+            valor2 = request.json['valor2']
+            print("valor2: " + str(valor2))
+            valor3 = request.json['valor3']
+            print("valor3: " + str(valor3))
+            res_r12 = reportar_12(x, y, col, valor, valor2, valor3, is_date)
             return{
                 'resultStatus': 'SUCCESS',
                 'message': "Reporte 12 generado correctamente",

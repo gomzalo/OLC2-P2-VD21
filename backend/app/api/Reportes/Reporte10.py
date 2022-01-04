@@ -15,16 +15,19 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 
 # ******* 10: "Ánalisis Comparativo de Vacunaciópn entre 2 paises." *******
-def reportar_10(eje_x, eje_y, col, filtro, pred, es_fecha):
+def reportar_10(eje_x, eje_y, col, filtro, filtro2, es_fecha):
     # print("entro a reportar_2")
     # Lectura del archivo
-    df = pd.read_csv('csv_file.csv')
+    df0 = pd.read_csv('csv_file.csv')
+    df0 = df0.fillna(0)
     # Filtrado
-    df = df.loc[df[col]==filtro,]
+    df = df0.loc[df0[col]==filtro,]
+    df2 = df0.loc[df0[col]==filtro2,]
     # Parametrizando fecha
     if es_fecha:
         df[eje_x] = pd.DatetimeIndex(df[eje_x])
-    # Parametrizando ejes
+        df2[eje_x] = pd.DatetimeIndex(df2[eje_x])
+    # -------   Parametrizando ejes df1   -------
     x = np.asarray(df[eje_x]).reshape(-1,1)
     x_data = df[eje_x]
     y = df[eje_y]
@@ -33,15 +36,15 @@ def reportar_10(eje_x, eje_y, col, filtro, pred, es_fecha):
     # Entrenando el modelo lin
     regr.fit(x,y)
     # Realizando predicicion lin
-    prediccion = regr.predict([[pred]]) # Prediccion
-    
-    # print("x\n")
-    # print(type(x))
-    # print(x)
-    # print("y\n")
-    # print(type(y))
-    # print(y)    
-    
+        # prediccion = regr.predict([[filtro2]]) # Prediccion
+        
+        # print("x\n")
+        # print(type(x))
+        # print(x)
+        # print("y\n")
+        # print(type(y))
+        # print(y)    
+        
     # ||||||||||||||    POLINOMIAL  ||||||||||||||
     # Indicando el grado de la distribucion polinomial
     pf = PolynomialFeatures(degree = 5)
@@ -56,12 +59,47 @@ def reportar_10(eje_x, eje_y, col, filtro, pred, es_fecha):
     # print("y_pred\n")
     # print(type(y_pred))
     # print(y_pred)
-    # ****  GRAFICA  **** 
+    # -------   Parametrizando ejes df2   -------
+    x2 = np.asarray(df2[eje_x]).reshape(-1,1)
+    x2_data = df2[eje_x]
+    y2 = df2[eje_y]
+    # ||||||||||||||    LINEAL  ||||||||||||||
+    # regr = linear_model.LinearRegression()
+    # Entrenando el modelo lin
+    regr.fit(x2,y2)
+    # Realizando predicicion lin
+        # prediccion = regr.predict([[filtro2]]) # Prediccion
+        
+        # print("x\n")
+        # print(type(x))
+        # print(x)
+        # print("y\n")
+        # print(type(y))
+        # print(y)    
+        
+    # ||||||||||||||    POLINOMIAL  ||||||||||||||
+    # Indicando el grado de la distribucion polinomial
+    pf = PolynomialFeatures(degree = 5)
+    x2_trans = pf.fit_transform(x2)
+    # Entrenando el modelo pol
+    regr.fit(x2_trans,y2)
+    # Realizando predicicion pol
+    y2_pred = regr.predict(x2_trans)
+    # rmse y r2
+    rmse2 = np.sqrt(mean_squared_error(y2, y2_pred))
+    r22 = r2_score(y2, y2_pred)
+    # ****  GRAFICA 1 **** 
     plt.scatter(x, y, color='black')
-    plt.title("Predicción de Infectados en " + str(filtro))
+    plt.title("Predicción de Infectados en " + str(filtro) + " vs " + str(filtro2))
     plt.xlabel(eje_x)
     plt.ylabel(eje_y)
     plt.plot(x, y_pred, color='blue', linewidth=3)
+    # ****  GRAFICA 2 **** 
+    plt.scatter(x2, y2, color='orange')
+    # plt.title("Predicción de Infectados en " + str(filtro2))
+    # plt.xlabel(eje_x)
+    # plt.ylabel(eje_y)
+    plt.plot(x2, y2_pred, color='blue', linewidth=3)
     # plt.show()
     
     # Preparando variables a devolver en peticion
@@ -72,7 +110,7 @@ def reportar_10(eje_x, eje_y, col, filtro, pred, es_fecha):
     else:
         x_json = json.dumps(x_data.tolist())
     y_json = json.dumps(y.tolist())
-    pred_json =  json.dumps(prediccion.tolist())
+    # pred_json =  json.dumps(prediccion.tolist())
     # print(x_json)
     rmse_json = json.dumps(rmse.tolist())
     coeficiente = regr.coef_
@@ -97,7 +135,7 @@ def reportar_10(eje_x, eje_y, col, filtro, pred, es_fecha):
         # "y_pred": y_pred.tolist(),
         # "img64": str(s),
         "img64": img64_json,
-                "pred": pred_json,
+        "pred": 0,
         "rmse": rmse_json,
         "r2": r2,
         "coef": coef_json

@@ -15,10 +15,11 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 
 # ******* 9: "Tendencia de la vacunación de en un País." *******
-def reportar_9(eje_x, eje_y, col, filtro, pred, es_fecha):
+def reportar_9(eje_x, eje_y, col, filtro, es_fecha):
     # print("entro a reportar_2")
     # Lectura del archivo
     df = pd.read_csv('csv_file.csv')
+    df = df.fillna(0)
     # Filtrado
     df = df.loc[df[col]==filtro,]
     # Parametrizando fecha
@@ -33,7 +34,7 @@ def reportar_9(eje_x, eje_y, col, filtro, pred, es_fecha):
     # Entrenando el modelo lin
     regr.fit(x,y)
     # Realizando predicicion lin
-    prediccion = regr.predict([[pred]]) # Prediccion
+    # prediccion = regr.predict([[pred]]) # Prediccion
     
     # print("x\n")
     # print(type(x))
@@ -72,7 +73,7 @@ def reportar_9(eje_x, eje_y, col, filtro, pred, es_fecha):
     else:
         x_json = json.dumps(x_data.tolist())
     y_json = json.dumps(y.tolist())
-    pred_json =  json.dumps(prediccion.tolist())
+    # pred_json =  json.dumps(prediccion.tolist())
     # print(x_json)
     rmse_json = json.dumps(rmse.tolist())
     coeficiente = regr.coef_
@@ -97,7 +98,7 @@ def reportar_9(eje_x, eje_y, col, filtro, pred, es_fecha):
         # "y_pred": y_pred.tolist(),
         # "img64": str(s),
         "img64": img64_json,
-                "pred": pred_json,
+        "pred": 0,
         "rmse": rmse_json,
         "r2": r2,
         "coef": coef_json

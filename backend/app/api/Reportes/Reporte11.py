@@ -15,10 +15,12 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 
 # ******* 11: "Porcentaje de hombres infectados por covid-19 en un País desde el primer caso activo." *******
-def reportar_11(eje_x, eje_y, col, filtro, pred, es_fecha):
+def reportar_11(eje_x, eje_y, col, filtro, col_genero, es_fecha):
     # print("entro a reportar_2")
     # Lectura del archivo
     df = pd.read_csv('csv_file.csv')
+    df = df.fillna(0)
+    
     # Filtrado
     df = df.loc[df[col]==filtro,]
     # Parametrizando fecha
@@ -28,12 +30,22 @@ def reportar_11(eje_x, eje_y, col, filtro, pred, es_fecha):
     x = np.asarray(df[eje_x]).reshape(-1,1)
     x_data = df[eje_x]
     y = df[eje_y]
+    
+    # Porcentaje
+    cant_hombres = df[col_genero].sum()
+    # print("cant_hombres")
+    # print(cant_hombres)
+    cant_casos = df[eje_y].sum()
+    # print("cant_casos")
+    # print(cant_casos)
+    percent = (cant_hombres/cant_casos)*100
+    # print(percent)
     # ||||||||||||||    LINEAL  ||||||||||||||
     regr = linear_model.LinearRegression()
     # Entrenando el modelo lin
     regr.fit(x,y)
     # Realizando predicicion lin
-    prediccion = regr.predict([[pred]]) # Prediccion
+    # prediccion = regr.predict([[pred]]) # Prediccion
     
     # print("x\n")
     # print(type(x))
@@ -72,7 +84,7 @@ def reportar_11(eje_x, eje_y, col, filtro, pred, es_fecha):
     else:
         x_json = json.dumps(x_data.tolist())
     y_json = json.dumps(y.tolist())
-    pred_json =  json.dumps(prediccion.tolist())
+    # pred_json =  json.dumps(prediccion.tolist())
     # print(x_json)
     rmse_json = json.dumps(rmse.tolist())
     coeficiente = regr.coef_
@@ -97,7 +109,7 @@ def reportar_11(eje_x, eje_y, col, filtro, pred, es_fecha):
         # "y_pred": y_pred.tolist(),
         # "img64": str(s),
         "img64": img64_json,
-                "pred": pred_json,
+        "pred": percent,
         "rmse": rmse_json,
         "r2": r2,
         "coef": coef_json

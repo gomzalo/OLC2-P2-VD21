@@ -40,21 +40,27 @@ import {
 
 function UserProfile() {
   const [col, setCol] = useState();
+  const [colGen, setColGen] = useState();
   const [csvArr, setCSVArr] = useContext(DataContext);
   const [x, setX] = useState();
   const [y, setY] = useState();
   const [isDate, setIsDate] = useState(false);
   const [reporte, setReporte] = useState();
+  // Utilizados para paises (en su maryoria)
   const [valor, setValor] = useState();
   const [valor2, setValor2] = useState();
-  const [valor3, setValor3] = useState();
+  const [valor3, setValor3] = useState("0");
+  // otros
+  // const [genero, setGenero] = useState();
+  const [genero2, setGenero2] = useState();
+  // const [colGenArr, setColGenArr] = useState([]);
   const [pred, setPred] = useState();
   const [colArr, setColArr] = useState([]);
   const [res_params, set_res_params] = useState();
   const headers = localStorage.getItem("headers");
-  // const csv_arr = localStorage.getItem("csv_arr");
-  const csv_arr_json = csvArr;
-  // const csv_arr_json = JSON.parse(csv_arr);
+  const csv_arr = localStorage.getItem("csv_arr");
+  // const csv_arr_json = csvArr;
+  const csv_arr_json = JSON.parse(csv_arr);
   const headers_arr = JSON.parse(headers);
   let col_arr;
   if(headers_arr.length === 0){
@@ -111,6 +117,7 @@ function UserProfile() {
     reporte_map.set(element.index, element.reporte);
   });
   // console.log(reporte_map);
+  // Col pais
   const handleColChange = (e) => {
     checkHeaders();
     let valor = e.target.value;
@@ -148,6 +155,61 @@ function UserProfile() {
         icon: 'error',
         title: 'Oops...',
         text: '¡Selecciona una columna valida!'
+      });
+    }
+  }
+  // // Col genero
+  // const handleColGenChange = (e) => {
+  //   checkHeaders();
+  //   let valor = e.target.value;
+  //   console.log(valor);
+  //   if(headers_arr.includes(valor)){
+  //     setColGen(valor);
+  //     // Obteniendo el index de la columna seleccionada
+  //     let index = headers_arr.indexOf(valor);
+  //     // console.log("index col: ", index);
+  //     // Creando arreglo de la columna seleccionada
+  //     let temp_arr = [];
+  //     // console.log(csv_arr_json);
+  //     csv_arr_json.forEach(element => {
+  //       temp_arr.push(element[index]);
+  //     });
+  //     // Creando arreglo con campos unicos
+  //     let col_arr = [...new Set(temp_arr)];
+  //     let temp = []
+  //     // Removiendo primer elemento, encabezado
+  //     col_arr.shift();
+  //     // Removiendo valores vacios
+  //     for (let i of col_arr) {
+  //       i && temp.push(i);
+  //     }
+  //     // Arreglo de columna con valores unicos
+  //     col_arr = temp;
+  //     setColGenArr(col_arr);
+  //     console.log(col_arr);
+  //     console.log(typeof col_arr);
+  //     console.log(typeof headers_arr);
+  //     console.log(typeof colArr);
+  //     console.log(colArr);
+  //   }else{      
+  //     Swal.fire({
+  //       icon: 'error',
+  //       title: 'Oops...',
+  //       text: '¡Selecciona una columna valida!'
+  //     });
+  //   }
+  // }
+  const handleGenChange = (e) => {
+    checkHeaders();
+    let valor = e.target.value;
+    console.log(valor);
+    if(headers_arr.includes(valor)){
+      setColGen(valor);
+    }else{      
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '¡Selecciona un genero valido!'
       });
     }
   }
@@ -315,7 +377,6 @@ function UserProfile() {
         console.log("rep6");
         if(checkCol && checkX && checkY && checkValor){
           console.log("rep6 true");
-          
           return true
         }else{
           return false;
@@ -324,16 +385,14 @@ function UserProfile() {
         console.log("rep7");
         if(checkCol && checkX && checkY && checkValor){
           console.log("rep7 true");
-          
           return true
         }else{
           return false;
         }
       case 8:
         console.log("rep8");
-        if(checkCol && checkX && checkY && checkValor){
+        if(checkCol && checkX && checkY && checkValor && checkPred){
           console.log("rep8 true");
-          
           return true
         }else{
           return false;
@@ -342,34 +401,30 @@ function UserProfile() {
         console.log("rep9");
         if(checkCol && checkX && checkY && checkValor){
           console.log("rep9 true");
-          
           return true
         }else{
           return false;
         }
       case 10:
         console.log("rep10");
-        if(checkCol && checkX && checkY && checkValor){
+        if(checkCol && checkX && checkY && checkValor && checkValor2){
           console.log("rep10 true");
-          
           return true
         }else{
           return false;
         }
       case 11:
         console.log("rep11");
-        if(checkCol && checkX && checkY && checkValor){
+        if(checkCol && checkX && checkY && checkValor && checkGen){
           console.log("rep11 true");
-          
           return true
         }else{
           return false;
         }
       case 12:
         console.log("rep12");
-        if(checkCol && checkX && checkY && checkValor){
+        if(checkCol && checkX && checkY && checkValor && checkValor2){
           console.log("rep12 true");
-          
           return true
         }else{
           return false;
@@ -507,12 +562,36 @@ function UserProfile() {
       return true;
     }
   }
+  // const checkColGen = () => {
+  //   if(colGenArr == null){
+  //     Swal.fire({
+  //       icon: 'error',
+  //       title: 'Oops...',
+  //       text: '¡Primero selecciona una columna de genero!'
+  //     });
+  //     return false;
+  //   }else{
+  //     return true;
+  //   }
+  // }
   const checkValor = () => {
     if(valor == null){
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: '¡Primero elige el valor a buscar!'
+      });
+      return false;
+    }else{
+      return true;
+    }
+  }
+  const checkGen = () => {
+    if(colGen == null){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '¡Primero elige el genero!'
       });
       return false;
     }else{
@@ -660,6 +739,347 @@ function UserProfile() {
             }
             break;
           case 5:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              x: x,
+              pred: pred,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 6:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              x: x,
+              pred: pred,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 7:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              x: x,
+              pred: pred,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 8:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              x: x,
+              pred: pred,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 9:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              x: x,
+              // pred: pred,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 10:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              valor2: valor2,
+              x: x,
+              // pred: pred,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 11:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              colGen: colGen,
+              // genero: genero,
+              x: x,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 12:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              valor2: valor2,
+              valor3: valor3,
+              x: x,
+              pred: pred,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 13:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              x: x,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 14:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              x: x,
+              pred: pred,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 15:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              x: x,
+              pred: pred,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 16:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              x: x,
+              pred: pred,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 17:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              x: x,
+              pred: pred,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 18:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              x: x,
+              pred: pred,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 19:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              x: x,
+              pred: pred,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 20:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              x: x,
+              pred: pred,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 21:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              x: x,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 22:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              x: x,
+              pred: pred,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 23:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              x: x,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 24:
+            // Parametros para peticion
+            params_rep = {
+              reporte: reporte,
+              col: col,
+              valor: valor,
+              x: x,
+              pred: pred,
+              isDate: isDate,
+              y: y,
+            }
+            // Dis Exp y Conclusiones PDF
+            dis_conc = {
+              diseno: "",
+              conclusion: "",
+            }
+            break;
+          case 25:
             // Parametros para peticion
             params_rep = {
               reporte: reporte,
@@ -1630,7 +2050,14 @@ function UserProfile() {
                             <Row>
                               <Col className="pr-md-1" md="6">
                                 <FormGroup>
-                                  <label>Columna país</label>
+                                  {/* <label>Columna país</label>
+                                  <UncontrolledDropdown>
+                                    <select onChange={handleColChange} className='bg-danger'>
+                                        <option>Elige una columna</option>
+                                        {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
+                                    </select>
+                                </UncontrolledDropdown> */}
+                                <label>Columna genero</label>
                                   <UncontrolledDropdown>
                                     <select onChange={handleColChange} className='bg-danger'>
                                         <option>Elige una columna</option>
@@ -1650,7 +2077,7 @@ function UserProfile() {
                                   </UncontrolledDropdown>
                                   <label>Genero</label>
                                   <UncontrolledDropdown>
-                                  <select onChange={handleYChange} className='bg-warning'>
+                                  <select onChange={handleGenChange} className='bg-warning'>
                                       <option>Elige la columna genero</option>
                                       {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
                                   </select>
@@ -1799,7 +2226,7 @@ function UserProfile() {
                                 </FormGroup>
                               </Col>
                             </Row>
-                            <Row>
+                            {/* <Row>
                               <Col md="12">
                                 <FormGroup>
                                   <label>Predicción a realizar</label>
@@ -1811,7 +2238,7 @@ function UserProfile() {
                                   />
                                 </FormGroup>
                               </Col>
-                            </Row>
+                            </Row> */}
                           </FormGroup>
                         )
                       // ** 13: "Muertes promedio por casos confirmados y edad de covid 19 en un País."
