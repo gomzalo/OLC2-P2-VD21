@@ -81,7 +81,7 @@ def post():
         x = request.json['x']
         y = request.json['y']
         is_date = request.json['isDate']
-        print("\nReporte: " + str(reporte_key) + " - " + reporte + "\nx: " + x + ", y: " + y + ", col: " + col + "\nvalor: " + valor + ", isDate: " + str(is_date) + '\n')
+        # print("\nReporte: " + str(reporte_key) + " - " + reporte + "\nx: " + x + ", y: " + y + ", col: " + col + "\nvalor: " + valor + ", isDate: " + str(is_date) + '\n')
         # ** 1: "Tendencia de la infección por Covid-19 en un País."
         # :::::::::::::::::::  PARAMS REP 1    :::::::::::::::::::
         if reporte_key == 1:
@@ -215,9 +215,9 @@ def post():
         # ** 13: "Muertes promedio por casos confirmados y edad de covid 19 en un País."
         # :::::::::::::::::::  PARAMS REP 13    :::::::::::::::::::
         elif reporte_key == 13:
-            pred = request.json['pred']
-            print("pred: " + str(pred))
-            res_r13 = reportar_13(x, y, col, valor, pred, is_date)
+            # pred = request.json['pred']
+            # print("pred: " + str(pred))
+            res_r13 = reportar_13(x, y, col, valor, is_date)
             return{
                 'resultStatus': 'SUCCESS',
                 'message': "Reporte 13 generado correctamente",
@@ -226,9 +226,9 @@ def post():
         # ** 14: "Muertes según regiones de un país - Covid 19."
         # :::::::::::::::::::  PARAMS REP 14    :::::::::::::::::::
         elif reporte_key == 14:
-            pred = request.json['pred']
-            print("pred: " + str(pred))
-            res_r14 = reportar_14(x, y, col, valor, pred, is_date)
+            # pred = request.json['pred']
+            # print("pred: " + str(pred))
+            res_r14 = reportar_14(x, y, col, valor, is_date)
             return{
                 'resultStatus': 'SUCCESS',
                 'message': "Reporte 14 generado correctamente",
@@ -237,9 +237,9 @@ def post():
         # ** 15: "Tendencia de casos confirmados de Coronavirus en un departamento de un País."
         # :::::::::::::::::::  PARAMS REP 15    :::::::::::::::::::
         elif reporte_key == 15:
-            pred = request.json['pred']
-            print("pred: " + str(pred))
-            res_r15 = reportar_15(x, y, col, valor, pred, is_date)
+            # pred = request.json['pred']
+            # print("pred: " + str(pred))
+            res_r15 = reportar_15(x, y, col, valor, is_date)
             return{
                 'resultStatus': 'SUCCESS',
                 'message': "Reporte 15 generado correctamente",
@@ -248,9 +248,9 @@ def post():
         # ** 16: "Porcentaje de muertes frente al total de casos en un país, región o continente."
         # :::::::::::::::::::  PARAMS REP 16    :::::::::::::::::::
         elif reporte_key == 16:
-            pred = request.json['pred']
-            print("pred: " + str(pred))
-            res_r16 = reportar_16(x, y, col, valor, pred, is_date)
+            muertes = request.json['muertes']
+            print("muertes: " + str(muertes))
+            res_r16 = reportar_16(x, y, col, valor, muertes, is_date)
             return{
                 'resultStatus': 'SUCCESS',
                 'message': "Reporte 16 generado correctamente",
@@ -345,7 +345,7 @@ def post():
         elif reporte_key == 25:
             pred = request.json['pred']
             print("pred: " + str(pred))
-            res_r25 = reportar_25(x, y, col, valor, pred, is_date)
+            res_r25 = reportar_25(x, y, pred, is_date)
             return{
                 'resultStatus': 'SUCCESS',
                 'message': "Reporte 25 generado correctamente",

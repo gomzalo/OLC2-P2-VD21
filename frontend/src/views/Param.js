@@ -209,7 +209,7 @@ function UserProfile() {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: '¡Selecciona un genero valido!'
+        text: '¡Selecciona un valor valido!'
       });
     }
   }
@@ -442,7 +442,6 @@ function UserProfile() {
         console.log("rep14");
         if(checkCol && checkX && checkY && checkValor){
           console.log("rep14 true");
-          
           return true
         }else{
           return false;
@@ -451,16 +450,14 @@ function UserProfile() {
         console.log("rep15");
         if(checkCol && checkX && checkY && checkValor){
           console.log("rep15 true");
-          
           return true
         }else{
           return false;
         }
       case 16:
         console.log("rep16");
-        if(checkCol && checkX && checkY && checkValor){
+        if(checkCol && checkX && checkY && checkValor && checkGen){
           console.log("rep16 true");
-          
           return true
         }else{
           return false;
@@ -540,7 +537,7 @@ function UserProfile() {
         }
       case 25:
         console.log("rep25");
-        if(checkCol && checkX && checkY && checkValor){
+        if(checkX && checkY && checkPred){
           console.log("rep25 true");
           return true
         }else{
@@ -901,7 +898,7 @@ function UserProfile() {
               col: col,
               valor: valor,
               x: x,
-              pred: pred,
+              // pred: pred,
               isDate: isDate,
               y: y,
             }
@@ -918,7 +915,7 @@ function UserProfile() {
               col: col,
               valor: valor,
               x: x,
-              pred: pred,
+              // pred: pred,
               isDate: isDate,
               y: y,
             }
@@ -934,6 +931,7 @@ function UserProfile() {
               reporte: reporte,
               col: col,
               valor: valor,
+              muertes: colGen,
               x: x,
               pred: pred,
               isDate: isDate,
@@ -1083,8 +1081,8 @@ function UserProfile() {
             // Parametros para peticion
             params_rep = {
               reporte: reporte,
-              col: col,
-              valor: valor,
+              col: 0,
+              valor: 0,
               x: x,
               pred: pred,
               isDate: isDate,
@@ -2249,7 +2247,7 @@ function UserProfile() {
                             <Row>
                               <Col className="pr-md-1" md="6">
                                 <FormGroup>
-                                  <label>Columna país</label>
+                                  <label>Columna region</label>
                                   <UncontrolledDropdown>
                                     <select onChange={handleColChange} className='bg-danger'>
                                         <option>Elige una columna</option>
@@ -2260,7 +2258,7 @@ function UserProfile() {
                               </Col>
                               <Col className="pl-md-1" md="6">
                                 <FormGroup>
-                                  <label>Nombre del país</label>
+                                  <label>Nombre de la region</label>
                                   <UncontrolledDropdown>
                                     <select onChange={handleValorChange} className='bg-warning'>
                                         <option>Elige el pais a filtrar</option>
@@ -2502,7 +2500,7 @@ function UserProfile() {
                               <Col></Col>
                               <Col className="px-md-1" md="4">
                                 <FormGroup>
-                                  <label>Elige la columna de muertes</label>
+                                  <label>Elige la columna de infectados</label>
                                   <UncontrolledDropdown>
                                     
                                     <select onChange={handleYChange} >
@@ -2529,7 +2527,7 @@ function UserProfile() {
                                 </FormGroup>
                               </Col>
                             </Row>
-                            <Row>
+                            {/* <Row>
                               <Col md="12">
                                 <FormGroup>
                                   <label>Predicción a realizar</label>
@@ -2541,7 +2539,7 @@ function UserProfile() {
                                   />
                                 </FormGroup>
                               </Col>
-                            </Row>
+                            </Row> */}
                           </FormGroup>
                         )
                       // ** 16: "Porcentaje de muertes frente al total de casos en un país, región o continente."
@@ -2589,17 +2587,22 @@ function UserProfile() {
                                         {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
                                     </select>
                                   </UncontrolledDropdown>
-                                  
                                 </FormGroup>
                               </Col>
                               <Col></Col>
                               <Col className="px-md-1" md="4">
                                 <FormGroup>
-                                  <label>Elige la columna de muertes</label>
+                                  <label>Elige la columna de casos</label>
                                   <UncontrolledDropdown>
-                                    
                                     <select onChange={handleYChange} >
                                         <option>Elige un eje Y</option>
+                                        {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
+                                    </select>
+                                  </UncontrolledDropdown>
+                                  <label>Elige la columna de muertes</label>
+                                  <UncontrolledDropdown>
+                                    <select onChange={handleGenChange} >
+                                        <option>Elige la columna de muertes</option>
                                         {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
                                     </select>
                                   </UncontrolledDropdown>
@@ -3402,13 +3405,13 @@ function UserProfile() {
                             <Row>
                               <Col className="pr-md-1" md="6">
                                 <FormGroup>
-                                  <label>Columna resultados entregados</label>
+                                  {/* <label>Columna resultados entregados</label>
                                   <UncontrolledDropdown>
                                     <select onChange={handleColChange} className='bg-danger'>
                                         <option>Elige una columna</option>
                                         {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
                                     </select>
-                                </UncontrolledDropdown>
+                                </UncontrolledDropdown> */}
                                 </FormGroup>
                               </Col>
                               <Col className="pl-md-1" md="6">
@@ -3445,9 +3448,8 @@ function UserProfile() {
                               <Col></Col>
                               <Col className="px-md-1" md="4">
                                 <FormGroup>
-                                  <label>Elige la columna de infectados</label>
+                                  <label>Elige la columna de casos confirmados</label>
                                   <UncontrolledDropdown>
-                                    
                                     <select onChange={handleYChange} >
                                         <option>Elige un eje Y</option>
                                         {headers_arr.map(option => <option key={option} value={option}>{option}</option>)}
