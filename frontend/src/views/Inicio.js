@@ -24,7 +24,7 @@ function Inicio() {
   const [getMessage, setGetMessage] = useState({})
 
   useEffect(()=>{
-    axios.get('http://0.0.0.0:5000/').then(response => {
+    axios.get('http://18.233.7.227:5000/').then(response => {
       console.log("SUCCESS", response);
       setGetMessage(response);
     }).catch(error => {

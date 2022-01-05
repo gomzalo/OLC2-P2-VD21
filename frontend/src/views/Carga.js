@@ -203,7 +203,7 @@ function Tables() {
         // ========  axios  ========
         axios({
           method: "post",
-          url: 'http://0.0.0.0:5000/get_file',
+          url: 'http://18.233.7.227:5000/get_file',
           data: JSON.stringify(data),
         })
         .then(function (response) {
